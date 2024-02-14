@@ -94,15 +94,15 @@ subpackages:
         - git
     pipeline:
       - runs: |-
-          mkdir -p "${{targets.contextdir}}"/usr/local/etc/profile.d/
-          mv contrib/completion/* "${{targets.contextdir}}"/usr/local/etc/profile.d/
+          mkdir -p "${{targets.contextdir}}"/etc/profile.d/
+          mv contrib/completion/* "${{targets.contextdir}}"/etc/profile.d/
     test:
       environment:
         contents:
           packages:
             - wolfi-base
       pipeline:
-        - runs: ls /usr/local/etc/profile.d/*.bash
+        - runs: ls /etc/profile.d/*.bash
 
 test:
   environment:
