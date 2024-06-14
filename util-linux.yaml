@@ -13,9 +13,12 @@ environment:
       - autoconf
       - automake
       - bash
+      - bison
       - build-base
       - busybox
       - ca-certificates-bundle
+      - flex
+      - glibc-dev
       - gtk-doc
       - libcap-ng-dev
       - libeconf-dev
@@ -23,6 +26,7 @@ environment:
       - linux-headers
       - linux-pam-dev
       - ncurses-dev
+      - po4a
       - sqlite-dev
       - zlib-dev
 
@@ -37,7 +41,7 @@ pipeline:
     with:
       repository: https://github.com/util-linux/util-linux.git
       tag: v${{package.version}}
-      expected-commit: faa3057dec713306a462924084e541af4a78e2fc
+      expected-commit: 72f0953663f8276e139add17a0a1c9f2e9f6db34
 
   - runs: |
       cp ttydefaults.h include/
@@ -46,16 +50,7 @@ pipeline:
   - uses: autoconf/configure
     with:
       opts: |
-        --disable-silent-rules \
-        --enable-newgrp \
-        --disable-nls \
-        --disable-tls \
-        --disable-kill \
-        --disable-chfn-chsh \
-        --with-vendordir=/usr/lib \
-        --without-python \
-        --without-econf \
-        --disable-asciidoc
+        --with-vendordir=/usr/lib
 
   - uses: autoconf/make
 
