@@ -32,8 +32,6 @@ pipeline:
       perl Build test
       perl Build install --destdir="${{targets.contextdir}}"
 
-  - uses: strip
-
 subpackages:
   - name: perl-syntax-keyword-try-doc
     pipeline:
