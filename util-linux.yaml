@@ -1,7 +1,7 @@
 package:
   name: util-linux
   version: 2.40.1
-  epoch: 1
+  epoch: 2
   description: Random collection of Linux utilities
   copyright:
     - license: |-
@@ -16,6 +16,7 @@ environment:
       - build-base
       - busybox
       - ca-certificates-bundle
+      - gtk-doc
       - libcap-ng-dev
       - libeconf-dev
       - libtool
@@ -32,14 +33,16 @@ var-transforms:
     to: major-minor
 
 pipeline:
-  - uses: fetch
+  - uses: git-checkout
     with:
-      expected-sha256: 59e676aa53ccb44b6c39f0ffe01a8fa274891c91bef1474752fad92461def24f
-      uri: https://www.kernel.org/pub/linux/utils/util-linux/v${{vars.major-minor}}/util-linux-${{package.version}}.tar.xz
+      repository: https://github.com/util-linux/util-linux.git
+      tag: v${{package.version}}
+      expected-commit: faa3057dec713306a462924084e541af4a78e2fc
 
   - runs: |
       cp ttydefaults.h include/
 
+  - runs: autoreconf -fiv
   - uses: autoconf/configure
     with:
       opts: |
@@ -172,5 +175,6 @@ subpackages:
 
 update:
   enabled: true
-  release-monitor:
-    identifier: 8179
+  github:
+    identifier: util-linux/util-linux
+    strip-prefix: v
