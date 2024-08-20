@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/appnope/
-package:
-  name: py3-appnope
-  version: 0.1.4
-  epoch: 0
-  description: Disable App Nap on macOS >= 10.9
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Disable App Nap on macOS >= 10.9
+  epoch: 0
+  name: py3-appnope
+  version: 0.1.4
 
 pipeline:
   - uses: git-checkout
@@ -32,13 +31,6 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  manual: false
-  github:
-    identifier: minrk/appnope
-    use-tag: true
-
 test:
   environment:
     contents:
@@ -48,3 +40,11 @@ test:
     - uses: python/import
       with:
         import: appnope
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: minrk/appnope
+    use-tag: true
+  manual: false

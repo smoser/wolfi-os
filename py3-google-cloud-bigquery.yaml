@@ -1,24 +1,3 @@
-# Generated from https://pypi.org/project/google-cloud-bigquery/
-package:
-  name: py3-google-cloud-bigquery
-  version: 3.25.0
-  epoch: 0
-  description: Google BigQuery API client library
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-grpcio
-      - py3-google-api-core
-      - py3-proto-plus
-      - py3-google-cloud-core
-      - py3-google-resumable-media
-      - py3-packaging
-      - py3-protobuf
-      - py3-python-dateutil
-      - py3-requests
-      - python-3
-
 environment:
   contents:
     packages:
@@ -28,6 +7,26 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-google-api-core
+      - py3-google-cloud-core
+      - py3-google-resumable-media
+      - py3-grpcio
+      - py3-packaging
+      - py3-proto-plus
+      - py3-protobuf
+      - py3-python-dateutil
+      - py3-requests
+      - python-3
+  description: Google BigQuery API client library
+  epoch: 0
+  name: py3-google-cloud-bigquery
+  version: 3.25.0
 
 pipeline:
   - uses: git-checkout
@@ -41,9 +40,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: googleapis/python-bigquery
     strip-prefix: v
+  manual: false

@@ -1,15 +1,3 @@
-package:
-  name: py3-werkzeug
-  version: 3.0.3
-  epoch: 0
-  description: The comprehensive WSGI web application library.
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-markupsafe
-      - python-3
-
 environment:
   contents:
     packages:
@@ -23,17 +11,37 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-markupsafe
+      - python-3
+  description: The comprehensive WSGI web application library.
+  epoch: 0
+  name: py3-werkzeug
+  version: 3.0.3
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: f9995e967979eb694d6b31536cc65314fd7e9c8c
       repository: https://github.com/pallets/werkzeug/
       tag: ${{package.version}}
-      expected-commit: f9995e967979eb694d6b31536cc65314fd7e9c8c
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

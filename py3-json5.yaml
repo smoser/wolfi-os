@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/json5/
-package:
-  name: py3-json5
-  version: 0.9.24
-  epoch: 0
-  description: A Python implementation of the JSON5 data format.
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: A Python implementation of the JSON5 data format.
+  epoch: 0
+  name: py3-json5
+  version: 0.9.24
 
 pipeline:
   - uses: git-checkout
@@ -32,10 +31,18 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: dpranke/pyjson5
     strip-prefix: v
     use-tag: true
+  manual: false

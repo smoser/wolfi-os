@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/nest-asyncio/
-package:
-  name: py3-nest-asyncio
-  version: 1.6.0
-  epoch: 1
-  description: Patch asyncio to allow nested event loops
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Patch asyncio to allow nested event loops
+  epoch: 1
+  name: py3-nest-asyncio
+  version: 1.6.0
 
 pipeline:
   - uses: git-checkout
@@ -32,10 +31,18 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: erdewit/nest_asyncio
     strip-prefix: v
     use-tag: true
+  manual: false

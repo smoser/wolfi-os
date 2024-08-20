@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/async-timeout/
-package:
-  name: py3-async-timeout
-  version: 4.0.3
-  epoch: 3
-  description: Timeout context manager for asyncio programs
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-typing-extensions
-      - python3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-typing-extensions
+      - python3
+  description: Timeout context manager for asyncio programs
+  epoch: 3
+  name: py3-async-timeout
+  version: 4.0.3
 
 pipeline:
   - uses: fetch
@@ -34,6 +33,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

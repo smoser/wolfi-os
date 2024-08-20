@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/zstandard/
-package:
-  name: py3-zstandard
-  version: 0.23.0
-  epoch: 0
-  description: Zstandard bindings for Python
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-cffi
-      - python3
-
 environment:
   contents:
     packages:
@@ -22,12 +9,24 @@ environment:
       - python3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-cffi
+      - python3
+  description: Zstandard bindings for Python
+  epoch: 0
+  name: py3-zstandard
+  version: 0.23.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: e27f2f49f187f5f698e0a6004bee2aed80fe39e3
       repository: https://github.com/indygreg/python-zstandard
       tag: ${{package.version}}
-      expected-commit: e27f2f49f187f5f698e0a6004bee2aed80fe39e3
 
   - name: Python Build
     runs: python setup.py build
@@ -37,14 +36,15 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  github:
-    identifier: indygreg/python-zstandard
-    use-tag: true
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: zstandard
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: indygreg/python-zstandard
+    use-tag: true

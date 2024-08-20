@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/tensorflow-io-gcs-filesystem/
-package:
-  name: py3-tensorflow-io-gcs-filesystem
-  version: 0.37.1
-  epoch: 0
-  description: TensorFlow IO
-  copyright:
-    - license: "Apache-2.0"
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: TensorFlow IO
+  epoch: 0
+  name: py3-tensorflow-io-gcs-filesystem
+  version: 0.37.1
 
 pipeline:
   - uses: git-checkout
@@ -32,9 +31,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: tensorflow/io
     strip-prefix: v
+  manual: false

@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/Flask-Cors/
-package:
-  name: py3-flask-cors
-  version: 4.0.1
-  epoch: 0
-  description: A Flask extension adding a decorator for CORS support
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-flask
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-flask
+  description: A Flask extension adding a decorator for CORS support
+  epoch: 0
+  name: py3-flask-cors
+  version: 4.0.1
 
 pipeline:
   - uses: git-checkout
@@ -35,9 +34,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  ignore-regex-patterns:
-    - "v.*"
   github:
     identifier: corydolphin/flask-cors
+  ignore-regex-patterns:
+    - v.*

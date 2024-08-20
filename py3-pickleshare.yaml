@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/pickleshare/
-package:
-  name: py3-pickleshare
-  version: 0.7.5
-  epoch: 1
-  description: Tiny 'shelve'-like database with concurrency support
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-pathlib2
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-pathlib2
+      - python-3
+  description: Tiny 'shelve'-like database with concurrency support
+  epoch: 1
+  name: py3-pickleshare
+  version: 0.7.5
 
 pipeline:
   - uses: git-checkout
@@ -33,9 +32,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: pickleshare/pickleshare
     use-tag: true
+  manual: false

@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/docopt/
-package:
-  name: py3-docopt
-  version: 0.6.2
-  epoch: 1
-  description: Pythonic argument parser, that will make you smile
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Pythonic argument parser, that will make you smile
+  epoch: 1
+  name: py3-docopt
+  version: 0.6.2
 
 pipeline:
   - uses: fetch
@@ -31,22 +30,12 @@ pipeline:
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: "LIBRARY=\"docopt\"\nIMPORT_STATEMENT=\"from docopt import docopt\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
+
 update:
   enabled: true
   release-monitor:
     identifier: 8436
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="docopt"
-        IMPORT_STATEMENT="from docopt import docopt"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

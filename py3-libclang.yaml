@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/libclang/
-package:
-  name: py3-libclang
-  version: 18.1.1
-  epoch: 0
-  description: 'Clang Python Bindings, mirrored from the official LLVM repo: https://github.com/llvm/llvm-project/tree/main/clang/bindings/python, to make the installation process easier.'
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: 'Clang Python Bindings, mirrored from the official LLVM repo: https://github.com/llvm/llvm-project/tree/main/clang/bindings/python, to make the installation process easier.'
+  epoch: 0
+  name: py3-libclang
+  version: 18.1.1
 
 pipeline:
   - uses: git-checkout
@@ -32,9 +31,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: sighingnow/libclang
     strip-prefix: llvm-
+  manual: false

@@ -1,8 +1,14 @@
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - py3-setuptools
+      - python3
+      - wolfi-base
+
 package:
-  name: py3-pgcli
-  version: 4.1.0
-  epoch: 0
-  description: CLI for Postgres Database. With auto-completion and syntax highlighting.
   copyright:
     - license: BSD-3-Clause
   dependencies:
@@ -18,23 +24,17 @@ package:
       - py3-setproctitle
       - py3-sqlparse
       - python3
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-setuptools
-      - python3
-      - wolfi-base
+  description: CLI for Postgres Database. With auto-completion and syntax highlighting.
+  epoch: 0
+  name: py3-pgcli
+  version: 4.1.0
 
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 46fe654cd16a3af837639dc2c8be60d1b7a038c7
       repository: https://github.com/dbcli/pgcli
       tag: v${{package.version}}
-      expected-commit: 46fe654cd16a3af837639dc2c8be60d1b7a038c7
 
   - name: Python Build
     runs: python setup.py build
@@ -43,6 +43,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

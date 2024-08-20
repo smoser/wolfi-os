@@ -1,17 +1,3 @@
-# Generated from https://pypi.org/project/google-auth-httplib2/
-package:
-  name: py3-google-auth-httplib2
-  version: 0.2.0
-  epoch: 2
-  description: 'Google Authentication Library: httplib2 transport'
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-google-auth
-      - py3-httplib2
-      - python-3
-
 environment:
   contents:
     packages:
@@ -21,6 +7,19 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-google-auth
+      - py3-httplib2
+      - python-3
+  description: 'Google Authentication Library: httplib2 transport'
+  epoch: 2
+  name: py3-google-auth-httplib2
+  version: 0.2.0
 
 pipeline:
   - uses: git-checkout
@@ -34,9 +33,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: GoogleCloudPlatform/google-auth-library-python-httplib2
     strip-prefix: v
+  manual: false

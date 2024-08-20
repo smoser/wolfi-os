@@ -1,23 +1,9 @@
-# Generated from https://pypi.org/project/pytest/
-package:
-  name: py3-pytest
-  version: 8.3.2
-  epoch: 1
-  description: 'pytest: simple powerful testing with Python'
-  copyright:
-    - license: MIT
-  dependencies:
-    provider-priority: 0
-
-vars:
-  pypi-package: pytest
-
 data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -30,6 +16,16 @@ environment:
       - py3-supported-setuptools-scm
       - py3-supported-wheel
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    provider-priority: 0
+  description: 'pytest: simple powerful testing with Python'
+  epoch: 1
+  name: py3-pytest
+  version: 8.3.2
+
 pipeline:
   - uses: git-checkout
     with:
@@ -38,10 +34,10 @@ pipeline:
       tag: ${{package.version}}
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
+  - dependencies:
+      provider-priority: ${{range.value}}
+      provides:
+        - py3-${{vars.pypi-package}}
       runtime:
         - py${{range.key}}-iniconfig
         - py${{range.key}}-packaging
@@ -50,47 +46,54 @@ subpackages:
         - py${{range.key}}-tomli
         - py${{range.key}}-importlib-metadata
         - py${{range.key}}-colorama
-      provides:
-        - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             import: ${{vars.pypi-package}}
-        - runs: |
-            python${{range.key}} -m pytest ./test_capitalize.py
+            python: python${{range.key}}
+        - runs: 'python${{range.key}} -m pytest ./test_capitalize.py
 
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}-bin
-    description: Executable binaries for ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
-      runtime:
-        - py${{range.key}}-${{vars.pypi-package}}
+          '
+        - uses: py/pip-check
+
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+      runtime:
+        - py${{range.key}}-${{vars.pypi-package}}
+    description: Executable binaries for ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}-bin
     pipeline:
-      - runs: |
-          mkdir -p ${{targets.contextdir}}/usr
+      - runs: 'mkdir -p ${{targets.contextdir}}/usr
+
           mv ${{targets.contextdir}}/../py${{range.key}}-${{vars.pypi-package}}/usr/bin ${{targets.contextdir}}/usr
 
-  - name: py3-supported-${{vars.pypi-package}}
-    description: meta package providing ${{vars.pypi-package}} for supported python versions.
-    dependencies:
+        '
+    range: py-versions
+
+  - dependencies:
       runtime:
         - py3.10-${{vars.pypi-package}}
         - py3.11-${{vars.pypi-package}}
         - py3.12-${{vars.pypi-package}}
+    description: meta package providing ${{vars.pypi-package}} for supported python versions.
+    name: py3-supported-${{vars.pypi-package}}
 
 update:
   enabled: true
-  manual: false
   github:
     identifier: pytest-dev/pytest
+  manual: false
+
+vars:
+  pypi-package: pytest

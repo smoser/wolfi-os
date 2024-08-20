@@ -1,18 +1,3 @@
-# Generated from https://pypi.org/project/google-cloud-videointelligence/
-package:
-  name: py3-google-cloud-videointelligence
-  version: 2.11.4
-  epoch: 2
-  description: Google Cloud Videointelligence API client library
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-google-api-core
-      - py3-proto-plus
-      - py3-protobuf
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,6 +7,20 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-google-api-core
+      - py3-proto-plus
+      - py3-protobuf
+      - python-3
+  description: Google Cloud Videointelligence API client library
+  epoch: 2
+  name: py3-google-cloud-videointelligence
+  version: 2.11.4
 
 pipeline:
   - uses: git-checkout
@@ -35,9 +34,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: googleapis/python-videointelligence
     strip-prefix: v
+  manual: false

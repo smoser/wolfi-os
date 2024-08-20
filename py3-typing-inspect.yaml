@@ -1,18 +1,3 @@
-# Generated from https://pypi.org/project/typing-inspect/
-package:
-  name: py3-typing-inspect
-  version: 0.9.0
-  epoch: 1
-  description: Runtime inspection utilities for typing module.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-mypy-extensions
-      - py3-typing-extensions
-      - py3-typing
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,6 +7,20 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-mypy-extensions
+      - py3-typing
+      - py3-typing-extensions
+      - python-3
+  description: Runtime inspection utilities for typing module.
+  epoch: 1
+  name: py3-typing-inspect
+  version: 0.9.0
 
 pipeline:
   - uses: git-checkout
@@ -35,8 +34,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: ilevkivskyi/typing_inspect
+  manual: false

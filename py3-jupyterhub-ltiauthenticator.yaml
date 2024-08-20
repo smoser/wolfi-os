@@ -1,9 +1,14 @@
-# Generated from https://pypi.org/project/jupyterhub-ltiauthenticator/
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - py3-setuptools
+      - python-3
+      - wolfi-base
+
 package:
-  name: py3-jupyterhub-ltiauthenticator
-  version: 1.6.2
-  epoch: 0
-  description: JupyterHub authenticator implementing LTI v1.1 and LTI v1.3
   copyright:
     - license: BSD-3-Clause
   dependencies:
@@ -14,16 +19,10 @@ package:
       - py3-pyjwt
       - py3-traitlets
       - python-3
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-setuptools
-      - python-3
-      - wolfi-base
+  description: JupyterHub authenticator implementing LTI v1.1 and LTI v1.3
+  epoch: 0
+  name: py3-jupyterhub-ltiauthenticator
+  version: 1.6.2
 
 pipeline:
   - uses: git-checkout
@@ -37,9 +36,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jupyterhub/ltiauthenticator
     use-tag: true
+  manual: false

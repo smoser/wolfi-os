@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/onetimepass/
-package:
-  name: py3-onetimepass
-  version: 1.0.1
-  epoch: 0
-  description: Module for generating and validating HOTP and TOTP tokens
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Module for generating and validating HOTP and TOTP tokens
+  epoch: 0
+  name: py3-onetimepass
+  version: 1.0.1
 
 pipeline:
   - uses: git-checkout
@@ -31,6 +30,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: false

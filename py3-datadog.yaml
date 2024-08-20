@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/datadog/
-package:
-  name: py3-datadog
-  version: 0.49.1
-  epoch: 1
-  description: The Datadog Python library
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-requests
-      - py3-typing
-
 environment:
   contents:
     packages:
@@ -19,8 +6,19 @@ environment:
       - ca-certificates-bundle
       - wolfi-base
   environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
     SOURCE_DATE_EPOCH: 315532800
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-requests
+      - py3-typing
+  description: The Datadog Python library
+  epoch: 1
+  name: py3-datadog
+  version: 0.49.1
 
 pipeline:
   - uses: fetch
@@ -37,9 +35,12 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import datadog
+        imports: 'import datadog
+
           from datadog import initialize
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true

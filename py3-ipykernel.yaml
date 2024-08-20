@@ -1,9 +1,16 @@
-# Generated from https://pypi.org/project/ipykernel/
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - py3-setuptools
+      - python-3
+      - wolfi-base
+  environment:
+    SOURCE_DATE_EPOCH: 315532800
+
 package:
-  name: py3-ipykernel
-  version: 6.29.5
-  epoch: 0
-  description: IPython Kernel for Jupyter
   copyright:
     - license: BSD-3-Clause
   dependencies:
@@ -22,19 +29,10 @@ package:
       - py3-tornado
       - py3-traitlets
       - python-3
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-setuptools
-      - python-3
-      - wolfi-base
-  environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
-    SOURCE_DATE_EPOCH: 315532800
+  description: IPython Kernel for Jupyter
+  epoch: 0
+  name: py3-ipykernel
+  version: 6.29.5
 
 pipeline:
   - uses: fetch
@@ -47,13 +45,14 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  release-monitor:
-    identifier: 10514
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: ipykernel
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  release-monitor:
+    identifier: 10514

@@ -1,14 +1,3 @@
-package:
-  name: py3-tz
-  version: "2024.1"
-  epoch: 0
-  description: Python3 definitions of world timezone
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -19,11 +8,22 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: Python3 definitions of world timezone
+  epoch: 0
+  name: py3-tz
+  version: '2024.1'
+
 pipeline:
   - uses: fetch
     with:
-      uri: https://pypi.python.org/packages/source/p/pytz/pytz-${{package.version}}.tar.gz
       expected-sha512: cc1e4c9b34c62791cea277a0ce188d975e62135cb15bccfb49dc1a9366c7697ead9c67956846699f18b90db4c66e6c5fe1a91a524d01ae821c0eaa613550ea74
+      uri: https://pypi.python.org/packages/source/p/pytz/pytz-${{package.version}}.tar.gz
 
   - name: Python Build
     runs: python setup.py build
@@ -32,6 +32,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

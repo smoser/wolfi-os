@@ -1,9 +1,12 @@
-# Generated from https://pypi.org/project/knack/
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - wolfi-base
+
 package:
-  name: py3-knack
-  version: 0.12.0
-  epoch: 0
-  description: A Command-Line Interface framework
   copyright:
     - license: MIT
   dependencies:
@@ -14,14 +17,10 @@ package:
       - py3-pygments
       - py3-pyyaml
       - py3-tabulate
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - wolfi-base
+  description: A Command-Line Interface framework
+  epoch: 0
+  name: py3-knack
+  version: 0.12.0
 
 pipeline:
   - uses: git-checkout
@@ -39,8 +38,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import knack
+        imports: 'import knack
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,16 +1,3 @@
-package:
-  name: py3-sphinxcontrib-packages
-  version: 1.1.2
-  epoch: 4
-  description: This packages contains the Packages sphinx extension, which provides directives to display packages installed on the host machine
-  copyright:
-    - license: AGPL-3.0-or-later
-  dependencies:
-    runtime:
-      - py3-distro
-      - py3-sphinx
-      - python3
-
 environment:
   contents:
     packages:
@@ -24,21 +11,44 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: AGPL-3.0-or-later
+  dependencies:
+    runtime:
+      - py3-distro
+      - py3-sphinx
+      - python3
+  description: This packages contains the Packages sphinx extension, which provides directives to display packages installed on the host machine
+  epoch: 4
+  name: py3-sphinxcontrib-packages
+  version: 1.1.2
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/sphinx-contrib/packages
       expected-commit: 55cf729a288d0a1b4ef39dcdc6deb4988bf24d8d
+      repository: https://github.com/sphinx-contrib/packages
       tag: v${{package.version}}
 
   - name: Python Build
-    runs: |
-      python3 -m build
+    runs: 'python3 -m build
 
-  - runs: |
-      python3 -m installer -d "${{targets.destdir}}" dist/sphinxcontrib_packages*.whl
+    '
+
+  - runs: 'python3 -m installer -d "${{targets.destdir}}" dist/sphinxcontrib_packages*.whl
+
+    '
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

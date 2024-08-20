@@ -1,28 +1,3 @@
-package:
-  name: py3-tensorflow-model-analysis
-  version: 0.46.0
-  epoch: 2
-  description: Model analysis tools for TensorFlow
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - numpy
-      - py3-absl-py
-      - py3-attrs
-      - py3-ipython
-      - py3-ipywidgets
-      - py3-pandas
-      - py3-pillow
-      - py3-protobuf
-      - py3-rouge-score
-      - py3-sacrebleu
-      - py3-scipy
-      - py3-six
-      - py3-tensorflow-metadata
-      - pyarrow
-      - python-3
-
 environment:
   contents:
     packages:
@@ -44,8 +19,33 @@ environment:
       - wolfi-base
   environment:
     PROTOC: /usr/bin/protoc
-    PROTOC_INSTALL_DIR: /usr/bin
     PROTOC_INCLUDE: /usr/include/google/protobuf
+    PROTOC_INSTALL_DIR: /usr/bin
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - numpy
+      - py3-absl-py
+      - py3-attrs
+      - py3-ipython
+      - py3-ipywidgets
+      - py3-pandas
+      - py3-pillow
+      - py3-protobuf
+      - py3-rouge-score
+      - py3-sacrebleu
+      - py3-scipy
+      - py3-six
+      - py3-tensorflow-metadata
+      - pyarrow
+      - python-3
+  description: Model analysis tools for TensorFlow
+  epoch: 2
+  name: py3-tensorflow-model-analysis
+  version: 0.46.0
 
 pipeline:
   - uses: git-checkout
@@ -62,9 +62,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: tensorflow/model-analysis
     strip-prefix: v
+  manual: false

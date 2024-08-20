@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/pyaes/
-package:
-  name: py3-pyaes
-  version: 1.6.1
-  epoch: 2
-  description: Pure-Python Implementation of the AES block-cipher and common modes of operation
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -20,12 +8,23 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: Pure-Python Implementation of the AES block-cipher and common modes of operation
+  epoch: 2
+  name: py3-pyaes
+  version: 1.6.1
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 23a1b4c0488bd38e03a48120dfda98913f4c87d2
       repository: https://github.com/ricmoo/pyaes
       tag: v${{package.version}}
-      expected-commit: 23a1b4c0488bd38e03a48120dfda98913f4c87d2
 
   - name: Python Build
     runs: python setup.py build
@@ -35,11 +34,19 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  ignore-regex-patterns:
-    - .1.0.0
   github:
     identifier: ricmoo/pyaes
     strip-prefix: v
     use-tag: true
+  ignore-regex-patterns:
+    - .1.0.0

@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/prompt-toolkit/
-package:
-  name: py3-prompt-toolkit
-  version: 3.0.47
-  epoch: 0
-  description: Library for building powerful interactive command lines in Python
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-wcwidth
-      - python3
-
 environment:
   contents:
     packages:
@@ -21,12 +8,24 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-wcwidth
+      - python3
+  description: Library for building powerful interactive command lines in Python
+  epoch: 0
+  name: py3-prompt-toolkit
+  version: 3.0.47
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 669541123c9a72da1fda662cbd0a18ffe9e6d113
       repository: https://github.com/prompt-toolkit/python-prompt-toolkit
       tag: ${{package.version}}
-      expected-commit: 669541123c9a72da1fda662cbd0a18ffe9e6d113
 
   - name: Python Build
     runs: python setup.py build
@@ -35,6 +34,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/google-crc32c/
-package:
-  name: py3-google-crc32c
-  version: 1.5.0
-  epoch: 3
-  description: A python wrapper of the C library 'Google CRC32C'
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: A python wrapper of the C library 'Google CRC32C'
+  epoch: 3
+  name: py3-google-crc32c
+  version: 1.5.0
 
 pipeline:
   - uses: git-checkout
@@ -32,9 +31,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: googleapis/python-crc32c
     strip-prefix: v
+  manual: false

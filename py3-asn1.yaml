@@ -1,14 +1,3 @@
-package:
-  name: py3-asn1
-  version: 0.4.8
-  epoch: 6
-  description: Python3 ASN1 library
-  copyright:
-    - license: BSD-2-Clause
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -19,19 +8,40 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-2-Clause
+  dependencies:
+    runtime:
+      - python3
+  description: Python3 ASN1 library
+  epoch: 6
+  name: py3-asn1
+  version: 0.4.8
+
 pipeline:
   - uses: fetch
     with:
-      uri: https://files.pythonhosted.org/packages/source/p/pyasn1/pyasn1-${{package.version}}.tar.gz
       expected-sha256: aef77c9fb94a3ac588e87841208bdec464471d9871bd5050a287cc9a475cd0ba
+      uri: https://files.pythonhosted.org/packages/source/p/pyasn1/pyasn1-${{package.version}}.tar.gz
 
-  - runs: |
-      python3 setup.py build
+  - runs: 'python3 setup.py build
 
-  - runs: |
-      python3 setup.py install --prefix=/usr --root="${{targets.destdir}}" --skip-build
+    '
+
+  - runs: 'python3 setup.py install --prefix=/usr --root="${{targets.destdir}}" --skip-build
+
+    '
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

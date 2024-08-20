@@ -1,12 +1,3 @@
-# Generated from https://pypi.org/project/pycryptodome/
-package:
-  name: py3-pycryptodome
-  version: 3.20.0
-  epoch: 2
-  description: Cryptographic library for Python
-  copyright:
-    - license: BSD-3-Clause
-
 environment:
   contents:
     packages:
@@ -14,6 +5,14 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  description: Cryptographic library for Python
+  epoch: 2
+  name: py3-pycryptodome
+  version: 3.20.0
 
 pipeline:
   - uses: fetch
@@ -30,8 +29,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import Crypto
+        imports: 'import Crypto
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true

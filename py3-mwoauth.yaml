@@ -1,21 +1,3 @@
-# Generated from https://pypi.org/project/mwoauth/
-package:
-  name: py3-mwoauth
-  # Upstream released v0.4.0 on PyPI, but no source tarball was uploaded. Also repository does not provide neither tags nor releases for 0.4.0.
-  # TODO: Use semver and enable `update`, once the issue is resolved: https://github.com/mediawiki-utilities/python-mwoauth/issues/50
-  version: 0.0_git20231018
-  epoch: 0
-  description: A generic MediaWiki OAuth handshake helper.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-pyjwt
-      - py3-oauthlib
-      - py3-requests
-      - py3-requests-oauthlib
-      - python-3
-
 environment:
   contents:
     packages:
@@ -26,21 +8,44 @@ environment:
       - python-3
       - wolfi-base
 
-vars:
-  commit: 2cb6b7107e5fb80353a390c9ff4b74566ced679a
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-oauthlib
+      - py3-pyjwt
+      - py3-requests
+      - py3-requests-oauthlib
+      - python-3
+  description: A generic MediaWiki OAuth handshake helper.
+  epoch: 0
+  name: py3-mwoauth
+  version: 0.0_git20231018
 
 pipeline:
   - uses: fetch
     with:
-      uri: https://github.com/mediawiki-utilities/python-mwoauth/archive/${{vars.commit}}.tar.gz
       expected-sha256: de31a42aae05d86fb8d02c0523556281a46da364f19c1b0d4386eb8a14b4b8f5
       strip-components: 1
+      uri: https://github.com/mediawiki-utilities/python-mwoauth/archive/${{vars.commit}}.tar.gz
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: false
   exclude-reason: No releases or tags since 2017. But last commit was made in 2023.
+
+vars:
+  commit: 2cb6b7107e5fb80353a390c9ff4b74566ced679a

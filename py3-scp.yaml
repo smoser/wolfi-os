@@ -1,12 +1,3 @@
-# Generated from https://pypi.org/project/scp/
-package:
-  name: py3-scp
-  version: 0.15.0
-  epoch: 1
-  description: scp module for paramiko
-  copyright:
-    - license: LGPL-2.1-or-later
-
 environment:
   contents:
     packages:
@@ -14,6 +5,14 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: LGPL-2.1-or-later
+  description: scp module for paramiko
+  epoch: 1
+  name: py3-scp
+  version: 0.15.0
 
 pipeline:
   - uses: git-checkout
@@ -31,8 +30,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import scp
+        imports: 'import scp
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true

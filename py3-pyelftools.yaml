@@ -1,23 +1,9 @@
-package:
-  name: py3-pyelftools
-  version: 0.31
-  epoch: 0
-  description: "Python Library for analyzing ELF files and DWARF debugging information"
-  copyright:
-    - license: LicenseRef-pyelftools-public-domain
-      license-path: LICENSE
-  dependencies:
-    provider-priority: 0
-
-vars:
-  pypi-package: pyelftools
-
 data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -28,27 +14,45 @@ environment:
       - py3-supported-python-dev
       - py3-supported-wheel
 
+package:
+  copyright:
+    - license: LicenseRef-pyelftools-public-domain
+      license-path: LICENSE
+  dependencies:
+    provider-priority: 0
+  description: Python Library for analyzing ELF files and DWARF debugging information
+  epoch: 0
+  name: py3-pyelftools
+  version: 0.31
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: ff0118701a091ea9cbf3b44c65046754e3c77156
       repository: https://github.com/eliben/pyelftools
       tag: v${{package.version}}
-      expected-commit: ff0118701a091ea9cbf3b44c65046754e3c77156
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
+  - dependencies:
       provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - runs: python${{range.key}} setup.py clean --all
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
+    test:
+      environment:
+        contents:
+          packages:
+            - busybox
+      pipeline:
+        - uses: py/pip-check
 
   - name: py3-wheels-${{vars.pypi-package}}
     pipeline:
@@ -58,5 +62,8 @@ update:
   enabled: true
   github:
     identifier: eliben/pyelftools
-    use-tag: true
     strip-prefix: v
+    use-tag: true
+
+vars:
+  pypi-package: pyelftools

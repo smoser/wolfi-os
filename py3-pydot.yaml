@@ -1,15 +1,3 @@
-package:
-  name: py3-pydot
-  version: 3.0.1
-  epoch: 0
-  description: Python interface to Graphviz's Dot
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-parsing
-      - python-3
-
 environment:
   contents:
     packages:
@@ -23,29 +11,44 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-parsing
+      - python-3
+  description: Python interface to Graphviz's Dot
+  epoch: 0
+  name: py3-pydot
+  version: 3.0.1
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/pydot/pydot
       expected-commit: 0daa0b4bb22748b65dc0ab3cadcf37aa5bc0afc8
+      repository: https://github.com/pydot/pydot
       tag: v${{package.version}}
 
-  - runs: |
-      python3 -m gpep517 build-wheel --wheel-dir dist --output-fd 1
+  - runs: 'python3 -m gpep517 build-wheel --wheel-dir dist --output-fd 1
+
       python3 -m installer -d "${{targets.destdir}}" dist/*.whl
 
-  - uses: strip
+    '
 
-update:
-  enabled: true
-  github:
-    identifier: pydot/pydot
-    use-tag: true
-    tag-filter: v
-    strip-prefix: v
+  - uses: strip
 
 test:
   pipeline:
     - uses: python/import
       with:
         import: pydot
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: pydot/pydot
+    strip-prefix: v
+    tag-filter: v
+    use-tag: true

@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/cffi/
-package:
-  name: py3-cffi
-  version: 1.17.0
-  epoch: 0
-  description: Foreign Function Interface for Python calling C code.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-pycparser
-      - python3
-
 environment:
   contents:
     packages:
@@ -23,12 +10,24 @@ environment:
       - python3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-pycparser
+      - python3
+  description: Foreign Function Interface for Python calling C code.
+  epoch: 0
+  name: py3-cffi
+  version: 1.17.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 74731f941cf464ad3be5e13708a0a0183b32b3b7
       repository: https://github.com/python-cffi/cffi
       tag: v${{package.version}}
-      expected-commit: 74731f941cf464ad3be5e13708a0a0183b32b3b7
 
   - uses: python/build
 
@@ -36,15 +35,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  pipeline:
+    - uses: python/import
+      with:
+        import: cffi
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
     identifier: python-cffi/cffi
     strip-prefix: v
     tag-filter: v
-
-test:
-  pipeline:
-    - uses: python/import
-      with:
-        import: cffi

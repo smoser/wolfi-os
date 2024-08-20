@@ -1,9 +1,14 @@
-# Generated from https://pypi.org/project/oauthenticator/
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - py3-setuptools
+      - python-3
+      - wolfi-base
+
 package:
-  name: py3-oauthenticator
-  version: 16.3.1
-  epoch: 0
-  description: 'OAuthenticator: Authenticate JupyterHub users with common OAuth providers'
   copyright:
     - license: BSD-3-Clause
   dependencies:
@@ -15,16 +20,10 @@ package:
       - py3-tornado
       - py3-traitlets
       - python-3
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-setuptools
-      - python-3
-      - wolfi-base
+  description: 'OAuthenticator: Authenticate JupyterHub users with common OAuth providers'
+  epoch: 0
+  name: py3-oauthenticator
+  version: 16.3.1
 
 pipeline:
   - uses: git-checkout
@@ -38,9 +37,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jupyterhub/oauthenticator
     use-tag: true
+  manual: false

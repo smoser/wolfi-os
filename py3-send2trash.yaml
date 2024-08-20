@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/Send2Trash/
-package:
-  name: py3-send2trash
-  version: 1.8.2
-  epoch: 2
-  description: Send file to trash natively under Mac OS X, Windows and Linux
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Send file to trash natively under Mac OS X, Windows and Linux
+  epoch: 2
+  name: py3-send2trash
+  version: 1.8.2
 
 pipeline:
   - uses: git-checkout
@@ -32,8 +31,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: arsenetar/send2trash
+  manual: false

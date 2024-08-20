@@ -1,20 +1,3 @@
-# Generated from https://pypi.org/project/oauth2client/
-package:
-  name: py3-oauth2client
-  version: 4.1.3
-  epoch: 2
-  description: OAuth 2.0 client library
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-httplib2
-      - py3-asn1
-      - py3-asn1-modules
-      - py3-rsa
-      - py3-six
-      - python-3
-
 environment:
   contents:
     packages:
@@ -24,6 +7,22 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-asn1
+      - py3-asn1-modules
+      - py3-httplib2
+      - py3-rsa
+      - py3-six
+      - python-3
+  description: OAuth 2.0 client library
+  epoch: 2
+  name: py3-oauth2client
+  version: 4.1.3
 
 pipeline:
   - uses: git-checkout
@@ -37,18 +36,20 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  manual: false
-  github:
-    identifier: google/oauth2client
-    strip-prefix: v
-
 test:
   environment:
     contents:
       packages:
         - python-3
   pipeline:
-    - runs: |
-        python -c "import oauth2client; print(oauth2client.__version__)"
+    - runs: 'python -c "import oauth2client; print(oauth2client.__version__)"
+
+      '
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: google/oauth2client
+    strip-prefix: v
+  manual: false

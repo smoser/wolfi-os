@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/ldap3/
-package:
-  name: py3-ldap3
-  version: 2.9.1
-  epoch: 0
-  description: A strictly RFC 4510 conforming LDAP V3 pure Python client library
-  copyright:
-    - license: LGPL-3.0-or-later
-  dependencies:
-    runtime:
-      - py3-pyasn1
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: LGPL-3.0-or-later
+  dependencies:
+    runtime:
+      - py3-pyasn1
+      - python-3
+  description: A strictly RFC 4510 conforming LDAP V3 pure Python client library
+  epoch: 0
+  name: py3-ldap3
+  version: 2.9.1
 
 pipeline:
   - uses: git-checkout
@@ -33,10 +32,18 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: cannatag/ldap3
     strip-prefix: v
     use-tag: true
+  manual: false

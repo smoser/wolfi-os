@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/mypy-extensions/
-package:
-  name: py3-mypy-extensions
-  version: 1.0.0
-  epoch: 2
-  description: Type system extensions for programs checked with the mypy type checker.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Type system extensions for programs checked with the mypy type checker.
+  epoch: 2
+  name: py3-mypy-extensions
+  version: 1.0.0
 
 pipeline:
   - uses: git-checkout
@@ -32,9 +31,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: python/mypy_extensions
     use-tag: true
+  manual: false

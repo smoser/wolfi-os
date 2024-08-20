@@ -1,23 +1,3 @@
-# Generated from https://pypi.org/project/breezy/
-package:
-  name: py3-breezy
-  version: 3.3.8
-  epoch: 0
-  description: Friendly distributed version control system
-  copyright:
-    - license: GPL-2.0-or-later
-  dependencies:
-    runtime:
-      - python-3
-      - py3-configobj
-      - py3-dulwich
-      - py3-fastbencode
-      - py3-merge3
-      - py3-patiencediff
-      - py3-tzlocal
-      - py3-urllib3
-      - py3-pyyaml
-
 environment:
   contents:
     packages:
@@ -27,6 +7,25 @@ environment:
       - python3-dev
       - rust
       - wolfi-base
+
+package:
+  copyright:
+    - license: GPL-2.0-or-later
+  dependencies:
+    runtime:
+      - py3-configobj
+      - py3-dulwich
+      - py3-fastbencode
+      - py3-merge3
+      - py3-patiencediff
+      - py3-pyyaml
+      - py3-tzlocal
+      - py3-urllib3
+      - python-3
+  description: Friendly distributed version control system
+  epoch: 0
+  name: py3-breezy
+  version: 3.3.8
 
 pipeline:
   - uses: fetch
@@ -41,18 +40,30 @@ pipeline:
 
 test:
   pipeline:
-    - runs: |
-        mkdir test
+    - runs: 'mkdir test
+
         cd test
+
         brz init-repo .
+
         brz init
-        cat > hello.txt <<'EOF'
+
+        cat > hello.txt <<''EOF''
+
         Hello
+
         EOF
+
         brz add hello.txt
-        brz whoami 'Test test@chainguard.dev'
-        brz commit -m 'Test commit'
+
+        brz whoami ''Test test@chainguard.dev''
+
+        brz commit -m ''Test commit''
+
         brz log
+
+      '
+    - uses: py/pip-check
 
 update:
   enabled: true

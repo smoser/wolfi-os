@@ -1,14 +1,3 @@
-package:
-  name: py3-jmespath
-  version: 1.0.1
-  epoch: 4
-  description: "JMESPath is a query language for JSON"
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -19,19 +8,40 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: JMESPath is a query language for JSON
+  epoch: 4
+  name: py3-jmespath
+  version: 1.0.1
+
 pipeline:
   - uses: fetch
     with:
-      uri: https://files.pythonhosted.org/packages/source/j/jmespath/jmespath-${{package.version}}.tar.gz
       expected-sha256: 90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe
+      uri: https://files.pythonhosted.org/packages/source/j/jmespath/jmespath-${{package.version}}.tar.gz
 
-  - runs: |
-      python3 setup.py build
+  - runs: 'python3 setup.py build
 
-  - runs: |
-      python3 setup.py install --prefix=/usr --root="${{targets.destdir}}" --skip-build
+    '
+
+  - runs: 'python3 setup.py install --prefix=/usr --root="${{targets.destdir}}" --skip-build
+
+    '
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

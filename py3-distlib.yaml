@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/distlib/
-package:
-  name: py3-distlib
-  version: 0.3.8
-  epoch: 2
-  description: Distribution utilities
-  copyright:
-    - license: PSF-2.0
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -21,38 +9,42 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: PSF-2.0
+  dependencies:
+    runtime:
+      - python3
+  description: Distribution utilities
+  epoch: 2
+  name: py3-distlib
+  version: 0.3.8
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: ab5f8e797fbc56a0e3488bba68d05e7a602cb63f
       repository: https://github.com/pypa/distlib
       tag: ${{package.version}}
-      expected-commit: ab5f8e797fbc56a0e3488bba68d05e7a602cb63f
 
   - name: Python Build
-    runs: |
-      python -m build
+    runs: 'python -m build
+
       python3 -m installer -d "${{targets.destdir}}" dist/*.whl
-      find ${{targets.destdir}} -name "*.pyc" -exec rm -rf '{}' +
+
+      find ${{targets.destdir}} -name "*.pyc" -exec rm -rf ''{}'' +
+
+    '
 
   - uses: strip
+
+test:
+  pipeline:
+    - runs: "LIBRARY=\"distlib\"\nIMPORT_STATEMENT=\"import distlib\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: pypa/distlib
     use-tag: true
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="distlib"
-        IMPORT_STATEMENT="import distlib"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

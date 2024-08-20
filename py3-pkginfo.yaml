@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/pkginfo/
-package:
-  name: py3-pkginfo
-  version: 1.11.1
-  epoch: 0
-  description: Query metadata from sdists / bdists / installed packages.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Query metadata from sdists / bdists / installed packages.
+  epoch: 0
+  name: py3-pkginfo
+  version: 1.11.1
 
 pipeline:
   - uses: fetch
@@ -31,13 +30,14 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  release-monitor:
-    identifier: 11017
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: pkginfo
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  release-monitor:
+    identifier: 11017

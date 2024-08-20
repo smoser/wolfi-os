@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/pymongo/
-package:
-  name: py3-pymongo
-  version: 4.8.0
-  epoch: 0
-  description: Python driver for MongoDB <http://www.mongodb.org>
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-dnspython
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,8 +9,19 @@ environment:
       - python3-dev
       - wolfi-base
   environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
     SOURCE_DATE_EPOCH: 315532800
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-dnspython
+      - python-3
+  description: Python driver for MongoDB <http://www.mongodb.org>
+  epoch: 0
+  name: py3-pymongo
+  version: 4.8.0
 
 pipeline:
   - uses: git-checkout
@@ -37,8 +35,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: mongodb/mongo-python-driver
+  manual: false

@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/license-expression/
-package:
-  name: py3-license-expression
-  version: 30.3.1
-  epoch: 0
-  description: license-expression is a comprehensive utility library to parse, compare, simplify and normalize license expressions (such as SPDX license expressions) using boolean logic.
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-boolean.py
-      - python-3
-
 environment:
   contents:
     packages:
@@ -21,17 +8,37 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-boolean.py
+      - python-3
+  description: license-expression is a comprehensive utility library to parse, compare, simplify and normalize license expressions (such as SPDX license expressions) using boolean logic.
+  epoch: 0
+  name: py3-license-expression
+  version: 30.3.1
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 265415a2651c682157bd688a251093c1e7a2ee15
       repository: https://github.com/nexB/license-expression
       tag: v${{package.version}}
-      expected-commit: 265415a2651c682157bd688a251093c1e7a2ee15
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

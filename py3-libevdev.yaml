@@ -1,12 +1,3 @@
-# Generated from https://git.alpinelinux.org/aports/plain/community/py3-libevdev/APKBUILD
-package:
-  name: py3-libevdev
-  version: "0.11"
-  epoch: 0
-  description: Python3 wrapper around the evdev library
-  copyright:
-    - license: MIT
-
 environment:
   contents:
     packages:
@@ -17,20 +8,31 @@ environment:
       - py3-setuptools
       - python3
 
+package:
+  copyright:
+    - license: MIT
+  description: Python3 wrapper around the evdev library
+  epoch: 0
+  name: py3-libevdev
+  version: '0.11'
+
 pipeline:
   - uses: fetch
     with:
       expected-sha256: 60eebb58ff20be2d8443d716c3c299392720aac89db269fdb4b9de14fe313c24
       uri: https://gitlab.freedesktop.org/libevdev/python-libevdev/-/archive/${{package.version}}/python-libevdev-${{package.version}}.tar.gz
 
-  - runs: |
-      python3 setup.py build
-      python3 setup.py install \
-        --skip-build \
-        --prefix=/usr \
-        --root="${{targets.destdir}}"
+  - runs: "python3 setup.py build\npython3 setup.py install \\\n  --skip-build \\\n  --prefix=/usr \\\n  --root=\"${{targets.destdir}}\"\n"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

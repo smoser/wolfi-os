@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/tabulate/
-package:
-  name: py3-tabulate
-  version: 0.9.0
-  epoch: 2
-  description: Pretty-print tabular data
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -22,23 +10,47 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: Pretty-print tabular data
+  epoch: 2
+  name: py3-tabulate
+  version: 0.9.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: bf58e37e6b35e3cc9a0bd740f752abfd32b6e6f8
       repository: https://github.com/astanin/python-tabulate
       tag: v${{package.version}}
-      expected-commit: bf58e37e6b35e3cc9a0bd740f752abfd32b6e6f8
 
   - name: Python Build
-    runs: |
-      python3 -m gpep517 build-wheel \
+    runs: 'python3 -m gpep517 build-wheel \
+
       --wheel-dir dist \
+
       --output-fd 3 3>&1 >&2
 
+
       python3 -m installer -d "${{targets.destdir}}" \
+
       dist/*.whl
 
+    '
+
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,15 +1,3 @@
-package:
-  name: py3-face
-  version: 22.0.0
-  epoch: 2
-  description: "A command-line application framework (and CLI parser). Friendly for users, full-featured for developers."
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-boltons
-      - python3
-
 environment:
   contents:
     packages:
@@ -21,22 +9,37 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-boltons
+      - python3
+  description: A command-line application framework (and CLI parser). Friendly for users, full-featured for developers.
+  epoch: 2
+  name: py3-face
+  version: 22.0.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 6c8b1070312683cca0ed723f1cb99a7307f5ee91
       repository: https://github.com/mahmoud/face
       tag: v${{package.version}}
-      expected-commit: 6c8b1070312683cca0ed723f1cb99a7307f5ee91
 
-  - runs: |
-      python3 -m gpep517 build-wheel \
-        --wheel-dir dist \
-        --output-fd 3 3>&1 >&2
-      python3 -m installer \
-        -d "${{targets.destdir}}" \
-        dist/face-${{package.version}}-*.whl
+  - runs: "python3 -m gpep517 build-wheel \\\n  --wheel-dir dist \\\n  --output-fd 3 3>&1 >&2\npython3 -m installer \\\n  -d \"${{targets.destdir}}\" \\\n  dist/face-${{package.version}}-*.whl\n"
 
   - uses: strip
+
+test:
+  pipeline:
+    - uses: python/import
+      with:
+        imports: 'from face import Command, echo
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true
@@ -44,10 +47,3 @@ update:
     identifier: mahmoud/face
     strip-prefix: v
     use-tag: true
-
-test:
-  pipeline:
-    - uses: python/import
-      with:
-        imports: |
-          from face import Command, echo

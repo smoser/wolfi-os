@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/async_generator/
-package:
-  name: py3-async-generator
-  version: 1.10
-  epoch: 1
-  description: Async generators and context managers for Python 3.5+
-  copyright:
-    - license: MIT OR Apache-2.0
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT OR Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: Async generators and context managers for Python 3.5+
+  epoch: 1
+  name: py3-async-generator
+  version: 1.1
 
 pipeline:
   - uses: git-checkout
@@ -32,19 +31,21 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  manual: false
-  github:
-    identifier: python-trio/async_generator
-    strip-prefix: v
-    use-tag: true
-
 test:
   environment:
     contents:
       packages:
         - python-3
   pipeline:
-    - runs: |
-        python -c "import async_generator; print(async_generator.__version__)"
+    - runs: 'python -c "import async_generator; print(async_generator.__version__)"
+
+      '
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: python-trio/async_generator
+    strip-prefix: v
+    use-tag: true
+  manual: false

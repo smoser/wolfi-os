@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/google-pasta/
-package:
-  name: py3-google-pasta
-  version: 0.2.0
-  epoch: 2
-  description: pasta is an AST-based Python refactoring library
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-six
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-six
+      - python-3
+  description: pasta is an AST-based Python refactoring library
+  epoch: 2
+  name: py3-google-pasta
+  version: 0.2.0
 
 pipeline:
   - uses: git-checkout
@@ -33,10 +32,18 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: google/pasta
     strip-prefix: v
     use-tag: true
+  manual: false

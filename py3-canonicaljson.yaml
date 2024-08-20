@@ -1,14 +1,3 @@
-package:
-  name: py3-canonicaljson
-  version: 2.0.0
-  epoch: 0
-  description: Canonical JSON
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,17 +8,33 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: Canonical JSON
+  epoch: 0
+  name: py3-canonicaljson
+  version: 2.0.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: ebe1deeb8d24e44ae5f41156c6139febd807d17f
       repository: https://github.com/matrix-org/python-canonicaljson
       tag: v${{package.version}}
-      expected-commit: ebe1deeb8d24e44ae5f41156c6139febd807d17f
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  pipeline:
+    - runs: "LIBRARY=\"canonicaljson\"\nIMPORT_STATEMENT=\"import canonicaljson\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
 
 update:
   enabled: true
@@ -37,18 +42,3 @@ update:
     identifier: matrix-org/python-canonicaljson
     strip-prefix: v
     use-tag: true
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="canonicaljson"
-        IMPORT_STATEMENT="import canonicaljson"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

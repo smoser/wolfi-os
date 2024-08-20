@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/dnspython/
-package:
-  name: py3-dnspython
-  version: 2.6.1
-  epoch: 0
-  description: DNS toolkit
-  copyright:
-    - license: ISC
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: ISC
+  dependencies:
+    runtime:
+      - python-3
+  description: DNS toolkit
+  epoch: 0
+  name: py3-dnspython
+  version: 2.6.1
 
 pipeline:
   - uses: fetch
@@ -30,6 +29,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

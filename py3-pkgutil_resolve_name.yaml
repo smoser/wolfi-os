@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/pkgutil_resolve_name/
-package:
-  name: py3-pkgutil_resolve_name
-  version: 1.3.10
-  epoch: 1
-  description: Resolve a name to an object.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Resolve a name to an object.
+  epoch: 1
+  name: py3-pkgutil_resolve_name
+  version: 1.3.10
 
 pipeline:
   - uses: fetch
@@ -33,6 +32,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

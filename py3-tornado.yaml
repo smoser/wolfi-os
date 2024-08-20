@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/tornado/
-package:
-  name: py3-tornado
-  version: 6.4.1
-  epoch: 0
-  description: Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed.
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed.
+  epoch: 0
+  name: py3-tornado
+  version: 6.4.1
 
 pipeline:
   - uses: git-checkout
@@ -32,12 +31,20 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
-  ignore-regex-patterns:
-    - v*b\d*
   github:
     identifier: tornadoweb/tornado
     strip-prefix: v
     use-tag: true
+  ignore-regex-patterns:
+    - v*b\d*
+  manual: false

@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/pamela/
-package:
-  name: py3-pamela
-  version: 1.2.0
-  epoch: 0
-  description: PAM interface using ctypes
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: PAM interface using ctypes
+  epoch: 0
+  name: py3-pamela
+  version: 1.2.0
 
 pipeline:
   - uses: git-checkout
@@ -32,9 +31,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: minrk/pamela
     use-tag: true
+  manual: false

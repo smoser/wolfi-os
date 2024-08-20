@@ -1,13 +1,9 @@
-# Generated from https://pypi.org/project/pycparser/
-package:
-  name: py3-pycparser
-  version: "2.22"
-  epoch: 2
-  description: C parser in Python
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    provider-priority: 0
+data:
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -23,51 +19,56 @@ environment:
       - py3-supported-wheel
       - wolfi-base
 
-vars:
-  pypi-package: pycparser
-
-data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    provider-priority: 0
+  description: C parser in Python
+  epoch: 2
+  name: py3-pycparser
+  version: '2.22'
 
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 129d32ef805d715d90a3b2035b13168c17ca63d2
       repository: https://github.com/eliben/pycparser
       tag: release_v${{package.version}}
-      expected-commit: 129d32ef805d715d90a3b2035b13168c17ca63d2
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
-      - runs: |
-          python${{range.key}} -m pytest tests/
+      - runs: 'python${{range.key}} -m pytest tests/
+
+        '
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             import: ${{vars.pypi-package}}
+            python: python${{range.key}}
+        - uses: py/pip-check
 
 update:
   enabled: true
-  ignore-regex-patterns:
-    - release_*
-    - 1.x_final
   github:
     identifier: eliben/pycparser
     strip-prefix: release_v
     use-tag: true
+  ignore-regex-patterns:
+    - release_*
+    - 1.x_final
+
+vars:
+  pypi-package: pycparser

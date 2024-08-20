@@ -1,14 +1,3 @@
-package:
-  name: py3-wrapt
-  version: 1.16.0
-  epoch: 1
-  description: Module for decorators, wrappers and monkey patching.
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,12 +8,23 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Module for decorators, wrappers and monkey patching.
+  epoch: 1
+  name: py3-wrapt
+  version: 1.16.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 14ac73e28b2e8b330443e1d31c4a1d226329babc
       repository: https://github.com/GrahamDumpleton/wrapt
       tag: ${{package.version}}
-      expected-commit: 14ac73e28b2e8b330443e1d31c4a1d226329babc
 
   - name: Python Build
     uses: python/build
@@ -33,6 +33,14 @@ pipeline:
     uses: python/install
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

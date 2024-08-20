@@ -1,14 +1,3 @@
-package:
-  name: py3-pycosat
-  version: 0.6.6
-  epoch: 0
-  description: Python bindings to picosat (a SAT solver)
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -22,12 +11,23 @@ environment:
       - python3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: Python bindings to picosat (a SAT solver)
+  epoch: 0
+  name: py3-pycosat
+  version: 0.6.6
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 38bbc0ed7b21bd3e43dfc4be735557f06f224290
       repository: https://github.com/conda/pycosat
       tag: ${{package.version}}
-      expected-commit: 38bbc0ed7b21bd3e43dfc4be735557f06f224290
 
   - name: Python Build
     runs: python -m build
@@ -37,12 +37,14 @@ pipeline:
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: 'python -c "import pycosat"
+
+      '
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
     identifier: conda/pycosat
-
-test:
-  pipeline:
-    - runs: |
-        python -c "import pycosat"

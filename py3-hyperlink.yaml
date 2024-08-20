@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/hyperlink/
-package:
-  name: py3-hyperlink
-  version: 21.0.0
-  epoch: 2
-  description: A featureful, immutable, and correct URL for Python.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -21,24 +9,46 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: A featureful, immutable, and correct URL for Python.
+  epoch: 2
+  name: py3-hyperlink
+  version: 21.0.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: eae9223fafccfc4b32f8309bfe2b6817c3a88331
       repository: https://github.com/python-hyper/hyperlink
       tag: v${{package.version}}
-      expected-commit: eae9223fafccfc4b32f8309bfe2b6817c3a88331
 
   - name: Python Build
-    runs: |
-      python -m build
+    runs: 'python -m build
+
       python3 -m installer -d "${{targets.destdir}}" dist/*.whl
-      find ${{targets.destdir}} -name "*.pyc" -exec rm -rf '{}' +
+
+      find ${{targets.destdir}} -name "*.pyc" -exec rm -rf ''{}'' +
+
+    '
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: python-hyper/hyperlink
-    use-tag: true
     strip-prefix: v
+    use-tag: true

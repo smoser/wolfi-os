@@ -1,18 +1,3 @@
-# Generated from https://pypi.org/project/pyrsistent/
-# Something is wrong with the releases and tags with this project.
-# Lint tests are passing on local machine, but failing on CI.
-#nolint:git-checkout-must-use-github-updates
-package:
-  name: py3-pyrsistent
-  version: 0.20.0
-  epoch: 0
-  description: Persistent/Functional/Immutable data structures
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Persistent/Functional/Immutable data structures
+  epoch: 0
+  name: py3-pyrsistent
+  version: 0.20.0
 
 pipeline:
   - uses: git-checkout
@@ -35,12 +31,20 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  ignore-regex-patterns:
-    - 'rc'
   github:
-    use-tag: true
     identifier: tobgu/pyrsistent
     strip-prefix: v
     tag-filter: v
+    use-tag: true
+  ignore-regex-patterns:
+    - rc

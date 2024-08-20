@@ -1,12 +1,3 @@
-# Generated from https://pypi.org/project/javaproperties/
-package:
-  name: py3-javaproperties
-  version: 0.8.1
-  epoch: 1
-  description: Read & write Java .properties files
-  copyright:
-    - license: MIT
-
 environment:
   contents:
     packages:
@@ -14,6 +5,14 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  description: Read & write Java .properties files
+  epoch: 1
+  name: py3-javaproperties
+  version: 0.8.1
 
 pipeline:
   - uses: git-checkout
@@ -31,12 +30,14 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import javaproperties
+        imports: 'import javaproperties
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true
-  manual: false
   github:
     identifier: jwodder/javaproperties
     strip-prefix: v
+  manual: false

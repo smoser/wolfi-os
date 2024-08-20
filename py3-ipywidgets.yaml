@@ -1,20 +1,3 @@
-# Generated from https://pypi.org/project/ipywidgets/
-package:
-  name: py3-ipywidgets
-  version: 8.1.3
-  epoch: 0
-  description: Jupyter interactive widgets
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-comm
-      - py3-ipython
-      - py3-traitlets
-      - py3-widgetsnbextension
-      - py3-jsonschema
-      - python-3
-
 environment:
   contents:
     packages:
@@ -24,6 +7,22 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-comm
+      - py3-ipython
+      - py3-jsonschema
+      - py3-traitlets
+      - py3-widgetsnbextension
+      - python-3
+  description: Jupyter interactive widgets
+  epoch: 0
+  name: py3-ipywidgets
+  version: 8.1.3
 
 pipeline:
   - uses: fetch
@@ -36,13 +35,14 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  release-monitor:
-    identifier: 10516
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: ipywidgets
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  release-monitor:
+    identifier: 10516

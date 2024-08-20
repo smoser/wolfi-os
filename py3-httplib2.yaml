@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/httplib2/
-package:
-  name: py3-httplib2
-  version: 0.22.0
-  epoch: 1
-  description: A comprehensive HTTP client library.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-parsing
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-parsing
+      - python-3
+  description: A comprehensive HTTP client library.
+  epoch: 1
+  name: py3-httplib2
+  version: 0.22.0
 
 pipeline:
   - uses: git-checkout
@@ -33,10 +32,18 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: httplib2/httplib2
     strip-prefix: v
     use-tag: true
+  manual: false

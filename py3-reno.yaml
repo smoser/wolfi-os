@@ -1,18 +1,3 @@
-# Generated from https://pypi.org/project/reno/
-package:
-  name: py3-reno
-  version: 4.1.0
-  epoch: 1
-  description: RElease NOtes manager
-  copyright:
-    - license: "Apache-2.0"
-  dependencies:
-    runtime:
-      - py3-pyyaml
-      - py3-dulwich
-      - py3-packaging
-      - py3-pbr
-
 environment:
   contents:
     packages:
@@ -20,6 +5,20 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-dulwich
+      - py3-packaging
+      - py3-pbr
+      - py3-pyyaml
+  description: RElease NOtes manager
+  epoch: 1
+  name: py3-reno
+  version: 4.1.0
 
 pipeline:
   - uses: fetch
@@ -36,8 +35,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import reno
+        imports: 'import reno
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true

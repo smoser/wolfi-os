@@ -1,14 +1,3 @@
-package:
-  name: py3-magic
-  version: 0.4.27
-  epoch: 7
-  description: "Python3 wrapper for libmagic"
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - libmagic
-
 environment:
   contents:
     packages:
@@ -18,12 +7,23 @@ environment:
       - py3-setuptools
       - python3
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - libmagic
+  description: Python3 wrapper for libmagic
+  epoch: 7
+  name: py3-magic
+  version: 0.4.27
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: b443195104d89363b93a547584c1a12fce3b57ec
       repository: https://github.com/ahupp/python-magic
       tag: ${{package.version}}
-      expected-commit: b443195104d89363b93a547584c1a12fce3b57ec
 
   - name: Python Build
     uses: python/build-wheel
@@ -34,8 +34,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import magic
+        imports: 'import magic
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true

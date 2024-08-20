@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/pytz/
-package:
-  name: py3-pytz
-  version: 2024.1
-  epoch: 0
-  description: World timezone definitions, modern and historical
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -21,6 +9,17 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: World timezone definitions, modern and historical
+  epoch: 0
+  name: py3-pytz
+  version: 2024.1
+
 pipeline:
   - uses: fetch
     with:
@@ -31,6 +30,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: false

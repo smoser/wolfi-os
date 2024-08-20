@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/jsondiff/
-package:
-  name: py3-jsondiff
-  version: 2.2.0
-  epoch: 0
-  description: Diff JSON and JSON-like structures in Python
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-pyyaml
-
 environment:
   contents:
     packages:
@@ -17,6 +5,17 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-pyyaml
+  description: Diff JSON and JSON-like structures in Python
+  epoch: 0
+  name: py3-jsondiff
+  version: 2.2.0
 
 pipeline:
   - uses: git-checkout
@@ -34,8 +33,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import jsondiff
+        imports: 'import jsondiff
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true

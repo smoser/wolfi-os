@@ -1,24 +1,3 @@
-# Generated from https://pypi.org/project/bokeh/
-package:
-  name: py3-bokeh
-  version: 3.5.1
-  epoch: 0
-  description: Interactive plots and applications in the browser from Python
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-jinja2
-      - py3-contourpy
-      - numpy
-      - py3-packaging
-      - py3-pandas
-      - py3-pillow
-      - py3-pyyaml
-      - py3-tornado
-      - py3-xyzservices
-      - python-3
-
 environment:
   contents:
     packages:
@@ -28,6 +7,26 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - numpy
+      - py3-contourpy
+      - py3-jinja2
+      - py3-packaging
+      - py3-pandas
+      - py3-pillow
+      - py3-pyyaml
+      - py3-tornado
+      - py3-xyzservices
+      - python-3
+  description: Interactive plots and applications in the browser from Python
+  epoch: 0
+  name: py3-bokeh
+  version: 3.5.1
 
 pipeline:
   - uses: fetch
@@ -40,22 +39,12 @@ pipeline:
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: "LIBRARY=\"bokeh\"\nIMPORT_STATEMENT=\"import bokeh\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
+
 update:
   enabled: true
   release-monitor:
     identifier: 78655
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="bokeh"
-        IMPORT_STATEMENT="import bokeh"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

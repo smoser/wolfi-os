@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/outcome/
-package:
-  name: py3-outcome
-  version: 1.3.0
-  epoch: 1
-  description: Capture the outcome of Python function calls.
-  copyright:
-    - license: MIT
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-attrs
-
 environment:
   contents:
     packages:
@@ -19,12 +6,24 @@ environment:
       - ca-certificates-bundle
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-attrs
+  description: Capture the outcome of Python function calls.
+  epoch: 1
+  name: py3-outcome
+  version: 1.3.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 4037dd7fa89b3a26f41594607bc94aaea422d7c3
       repository: https://github.com/python-trio/outcome
       tag: v${{package.version}}
-      expected-commit: 4037dd7fa89b3a26f41594607bc94aaea422d7c3
 
   - name: Python Build
     uses: python/build-wheel
@@ -35,15 +34,17 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import outcome
+        imports: 'import outcome
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true
+  github:
+    identifier: python-trio/outcome
+    strip-prefix: v
+    use-tag: true
   ignore-regex-patterns:
     - .post0
     - DEBIAN-0.1.0-2
-  github:
-    identifier: python-trio/outcome
-    use-tag: true
-    strip-prefix: v

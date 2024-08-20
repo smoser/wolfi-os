@@ -1,15 +1,3 @@
-package:
-  name: py3-docutils
-  version: 0.21.2
-  epoch: 0
-  description: Documentation Utilities for Python3
-  copyright:
-    - license: BSD-2-Clause AND GPL-3.0-or-later AND Python-2.0
-  dependencies:
-    runtime:
-      - py3-pip
-      - python3
-
 environment:
   contents:
     packages:
@@ -20,33 +8,35 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-2-Clause AND GPL-3.0-or-later AND Python-2.0
+  dependencies:
+    runtime:
+      - py3-pip
+      - python3
+  description: Documentation Utilities for Python3
+  epoch: 0
+  name: py3-docutils
+  version: 0.21.2
+
 pipeline:
   - uses: fetch
     with:
-      uri: https://files.pythonhosted.org/packages/source/d/docutils/docutils-${{package.version}}.tar.gz
       expected-sha256: 3a6b18732edf182daa3cd12775bbb338cf5691468f91eeeb109deff6ebfa986f
+      uri: https://files.pythonhosted.org/packages/source/d/docutils/docutils-${{package.version}}.tar.gz
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: "LIBRARY=\"docutils\"\nIMPORT_STATEMENT=\"from docutils import nodes\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
+
 update:
   enabled: true
   release-monitor:
     identifier: 3849
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="docutils"
-        IMPORT_STATEMENT="from docutils import nodes"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

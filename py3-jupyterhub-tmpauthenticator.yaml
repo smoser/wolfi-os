@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/jupyterhub-tmpauthenticator/
-package:
-  name: py3-jupyterhub-tmpauthenticator
-  version: 1.0.0
-  epoch: 0
-  description: JupyterHub authenticator that hands out temporary accounts for everyone
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: JupyterHub authenticator that hands out temporary accounts for everyone
+  epoch: 0
+  name: py3-jupyterhub-tmpauthenticator
+  version: 1.0.0
 
 pipeline:
   - uses: git-checkout
@@ -32,10 +31,18 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jupyterhub/tmpauthenticator
     strip-prefix: v
     use-tag: true
+  manual: false

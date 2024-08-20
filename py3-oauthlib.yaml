@@ -1,14 +1,3 @@
-package:
-  name: py3-oauthlib
-  version: 3.2.2
-  epoch: 3
-  description: A generic, spec-compliant, thorough implementation of the OAuth request-signing logic
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -19,12 +8,23 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python3
+  description: A generic, spec-compliant, thorough implementation of the OAuth request-signing logic
+  epoch: 3
+  name: py3-oauthlib
+  version: 3.2.2
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: e6c33e41a8ce6dadff387cdc4613a55b63d1827e
       repository: https://github.com/oauthlib/oauthlib
       tag: v${{package.version}}
-      expected-commit: e6c33e41a8ce6dadff387cdc4613a55b63d1827e
 
   - name: Python Build
     runs: python setup.py build
@@ -33,6 +33,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

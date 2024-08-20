@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/fastavro/
-package:
-  name: py3-fastavro
-  version: 1.9.5
-  epoch: 0
-  description: Fast read/write of AVRO files
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +8,17 @@ environment:
       - python-3
       - python-3-dev
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Fast read/write of AVRO files
+  epoch: 0
+  name: py3-fastavro
+  version: 1.9.5
 
 pipeline:
   - uses: git-checkout
@@ -33,14 +32,15 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  manual: false
-  github:
-    identifier: fastavro/fastavro
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: fastavro
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: fastavro/fastavro
+  manual: false

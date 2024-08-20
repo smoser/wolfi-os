@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/matplotlib-inline/
-package:
-  name: py3-matplotlib-inline
-  version: 0.1.6
-  epoch: 2
-  description: Inline Matplotlib backend for Jupyter
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-traitlets
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-traitlets
+      - python-3
+  description: Inline Matplotlib backend for Jupyter
+  epoch: 2
+  name: py3-matplotlib-inline
+  version: 0.1.6
 
 pipeline:
   - uses: git-checkout
@@ -33,8 +32,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: ipython/matplotlib-inline
+  manual: false

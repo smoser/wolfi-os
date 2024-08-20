@@ -1,20 +1,3 @@
-# Generated from https://pypi.org/project/google-api-python-client/
-package:
-  name: py3-google-api-python-client
-  version: 2.141.0
-  epoch: 0
-  description: Google API Client Library for Python
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-httplib2
-      - py3-google-auth
-      - py3-google-auth-httplib2
-      - py3-google-api-core
-      - py3-uritemplate
-      - python-3
-
 environment:
   contents:
     packages:
@@ -24,6 +7,22 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-google-api-core
+      - py3-google-auth
+      - py3-google-auth-httplib2
+      - py3-httplib2
+      - py3-uritemplate
+      - python-3
+  description: Google API Client Library for Python
+  epoch: 0
+  name: py3-google-api-python-client
+  version: 2.141.0
 
 pipeline:
   - uses: git-checkout
@@ -37,9 +36,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: googleapis/google-api-python-client
     strip-prefix: v
+  manual: false

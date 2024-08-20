@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/isodate/
-package:
-  name: py3-isodate
-  version: 0.6.1
-  epoch: 2
-  description: An ISO 8601 date/time/duration parser and formatter
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-six
-      - python3
-
 environment:
   contents:
     packages:
@@ -22,6 +9,18 @@ environment:
       - py3-setuptools
       - python3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-six
+      - python3
+  description: An ISO 8601 date/time/duration parser and formatter
+  epoch: 2
+  name: py3-isodate
+  version: 0.6.1
 
 pipeline:
   - uses: git-checkout
@@ -35,8 +34,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
-    use-tag: true
     identifier: gweis/isodate
+    use-tag: true

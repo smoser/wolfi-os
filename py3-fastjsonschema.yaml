@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/fastjsonschema/
-package:
-  name: py3-fastjsonschema
-  version: 2.20.0
-  epoch: 0
-  description: Fastest Python implementation of JSON schema
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Fastest Python implementation of JSON schema
+  epoch: 0
+  name: py3-fastjsonschema
+  version: 2.20.0
 
 pipeline:
   - uses: git-checkout
@@ -32,16 +31,17 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  manual: false
-  github:
-    identifier: horejsek/python-fastjsonschema
-    strip-prefix: v
-    use-tag: true
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: fastjsonschema
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: horejsek/python-fastjsonschema
+    strip-prefix: v
+    use-tag: true
+  manual: false

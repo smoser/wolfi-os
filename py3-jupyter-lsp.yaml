@@ -1,17 +1,3 @@
-# Generated from https://pypi.org/project/jupyter-lsp/
-package:
-  name: py3-jupyter-lsp
-  version: 2.2.5
-  epoch: 0
-  description: Multi-Language Server WebSocket proxy for Jupyter Notebook/Lab server
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-jupyter-server
-      - py3-importlib-metadata
-      - python-3
-
 environment:
   contents:
     packages:
@@ -21,6 +7,19 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-importlib-metadata
+      - py3-jupyter-server
+      - python-3
+  description: Multi-Language Server WebSocket proxy for Jupyter Notebook/Lab server
+  epoch: 0
+  name: py3-jupyter-lsp
+  version: 2.2.5
 
 pipeline:
   - uses: fetch
@@ -32,6 +31,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

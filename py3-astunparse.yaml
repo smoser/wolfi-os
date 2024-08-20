@@ -1,12 +1,9 @@
-package:
-  name: py3-astunparse
-  version: 1.6.3
-  epoch: 3
-  description: An AST unparser for Python
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    provider-priority: 0
+data:
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -18,44 +15,45 @@ environment:
       - py3-supported-setuptools
       - py3-supported-wheel
 
-vars:
-  pypi-package: astunparse
-
-data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    provider-priority: 0
+  description: An AST unparser for Python
+  epoch: 3
+  name: py3-astunparse
+  version: 1.6.3
 
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 2acce01fcdda2ea32eea835c30ccca21aaff7297
       repository: https://github.com/simonpercivall/astunparse
       tag: v${{package.version}}
-      expected-commit: 2acce01fcdda2ea32eea835c30ccca21aaff7297
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
-      runtime:
-        - py${{range.key}}-six
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+      runtime:
+        - py${{range.key}}-six
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             import: ${{vars.pypi-package}}
+            python: python${{range.key}}
+        - uses: py/pip-check
 
 update:
   enabled: true
@@ -63,3 +61,6 @@ update:
     identifier: simonpercivall/astunparse
     strip-prefix: v
     use-tag: true
+
+vars:
+  pypi-package: astunparse

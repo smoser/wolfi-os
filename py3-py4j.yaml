@@ -1,14 +1,3 @@
-package:
-  name: py3-py4j
-  version: 0.10.9.7
-  epoch: 2
-  description: Enables Python programs to dynamically access arbitrary Java objects
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -39,22 +28,35 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python3
+  description: Enables Python programs to dynamically access arbitrary Java objects
+  epoch: 2
+  name: py3-py4j
+  version: 0.10.9.7
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/py4j/py4j
       expected-commit: cd479ba858d11272f4852669a6ad33307a7681c4
+      repository: https://github.com/py4j/py4j
       tag: ${{package.version}}
 
   - uses: patch
     with:
-      # To fix this error `Reason: UndefinedError("'style' is undefined")`
       patches: disable-copyWebJavadocPython.patch
 
-  - runs: |
-      export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+  - runs: 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+
       cd py4j-java
+
       ./gradlew buildPython
+
+    '
 
   - name: Python Build
     runs: python setup.py build
@@ -63,6 +65,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

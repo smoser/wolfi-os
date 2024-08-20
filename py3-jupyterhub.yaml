@@ -1,34 +1,3 @@
-# Generated from https://pypi.org/project/jupyterhub/
-package:
-  name: py3-jupyterhub
-  version: 5.1.0
-  epoch: 0
-  description: "JupyterHub: A multi-user server for Jupyter notebooks"
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-alembic
-      - py3-async-generator
-      - py3-certipy
-      - py3-jinja2
-      - py3-jupyter-telemetry
-      - py3-oauthlib
-      - py3-packaging
-      - py3-prometheus-client
-      - py3-python-dateutil
-      - py3-requests
-      - py3-sqlalchemy
-      - py3-tornado
-      - py3-traitlets
-      - py3-importlib-metadata
-      - py3-pamela
-      - py3-psutil
-      - linux-pam
-      - py3-jupyter-events
-      - py3-pydantic
-      - python-3
-
 environment:
   contents:
     packages:
@@ -42,11 +11,41 @@ environment:
       - wolfi-base
       - yarn
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - linux-pam
+      - py3-alembic
+      - py3-async-generator
+      - py3-certipy
+      - py3-importlib-metadata
+      - py3-jinja2
+      - py3-jupyter-events
+      - py3-jupyter-telemetry
+      - py3-oauthlib
+      - py3-packaging
+      - py3-pamela
+      - py3-prometheus-client
+      - py3-psutil
+      - py3-pydantic
+      - py3-python-dateutil
+      - py3-requests
+      - py3-sqlalchemy
+      - py3-tornado
+      - py3-traitlets
+      - python-3
+  description: 'JupyterHub: A multi-user server for Jupyter notebooks'
+  epoch: 0
+  name: py3-jupyterhub
+  version: 5.1.0
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/jupyterhub/jupyterhub
       expected-commit: cdc2151f7585fefa6ff7fdd0b37ece416fa667b8
+      repository: https://github.com/jupyterhub/jupyterhub
       tag: ${{package.version}}
 
   - name: Python Build
@@ -54,17 +53,18 @@ pipeline:
 
   - uses: strip
 
-update:
-  ignore-regex-patterns:
-    - b
-  enabled: true
-  manual: false
-  github:
-    identifier: jupyterhub/jupyterhub
-    use-tag: true
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: jupyterhub
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: jupyterhub/jupyterhub
+    use-tag: true
+  ignore-regex-patterns:
+    - b
+  manual: false

@@ -1,11 +1,3 @@
-package:
-  name: py3-typogrify
-  version: 2.0.7
-  epoch: 1
-  description: Filters to enhance web typography, including support for Django & Jinja templates
-  copyright:
-    - license: BSD-3-Clause
-
 environment:
   contents:
     packages:
@@ -18,11 +10,19 @@ environment:
       - python3
       - smartypants
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  description: Filters to enhance web typography, including support for Django & Jinja templates
+  epoch: 1
+  name: py3-typogrify
+  version: 2.0.7
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/mintchaos/typogrify
       expected-commit: bf9749813c72f58ca8989b737c5da4bff0fe0402
+      repository: https://github.com/mintchaos/typogrify
       tag: ${{package.version}}
 
   - name: Python Build
@@ -32,6 +32,14 @@ pipeline:
     uses: python/install
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

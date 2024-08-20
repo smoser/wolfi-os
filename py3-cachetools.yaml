@@ -1,14 +1,3 @@
-package:
-  name: py3-cachetools
-  version: 5.5.0
-  epoch: 0
-  description: Extensible memoizing collections and decorators
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -19,12 +8,23 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: Extensible memoizing collections and decorators
+  epoch: 0
+  name: py3-cachetools
+  version: 5.5.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 6c78a8ff67b21834c3873cc918d87b2c5cb22e5c
       repository: https://github.com/tkem/cachetools/
       tag: v${{package.version}}
-      expected-commit: 6c78a8ff67b21834c3873cc918d87b2c5cb22e5c
 
   - name: Python Build
     runs: python setup.py build
@@ -34,24 +34,14 @@ pipeline:
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: "LIBRARY=\"cachetools\"\nIMPORT_STATEMENT=\"from cachetools import TTLCache\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
     identifier: tkem/cachetools
     strip-prefix: v
     use-tag: true
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="cachetools"
-        IMPORT_STATEMENT="from cachetools import TTLCache"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

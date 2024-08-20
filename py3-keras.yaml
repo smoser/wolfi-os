@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/keras/
-package:
-  name: py3-keras
-  version: 3.5.0
-  epoch: 0
-  description: Deep learning for humans.
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: Deep learning for humans.
+  epoch: 0
+  name: py3-keras
+  version: 3.5.0
 
 pipeline:
   - uses: fetch
@@ -30,6 +29,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

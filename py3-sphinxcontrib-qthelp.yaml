@@ -1,15 +1,3 @@
-package:
-  name: py3-sphinxcontrib-qthelp
-  version: 2.0.0
-  epoch: 0
-  description: sphinxcontrib-qthelp is a sphinx extension which outputs QtHelp documents
-  copyright:
-    - license: BSD-2-Clause
-  dependencies:
-    runtime:
-      - py3-sphinx
-      - python3
-
 environment:
   contents:
     packages:
@@ -23,21 +11,43 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-2-Clause
+  dependencies:
+    runtime:
+      - py3-sphinx
+      - python3
+  description: sphinxcontrib-qthelp is a sphinx extension which outputs QtHelp documents
+  epoch: 0
+  name: py3-sphinxcontrib-qthelp
+  version: 2.0.0
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/sphinx-doc/sphinxcontrib-qthelp
       expected-commit: 783caf58e9ba9cf0450746b7f65d4bc8229ccd8f
+      repository: https://github.com/sphinx-doc/sphinxcontrib-qthelp
       tag: ${{package.version}}
 
   - name: Python Build
-    runs: |
-      python3 -m build
+    runs: 'python3 -m build
 
-  - runs: |
-      python3 -m installer -d "${{targets.destdir}}" dist/sphinxcontrib_qthelp*.whl
+    '
+
+  - runs: 'python3 -m installer -d "${{targets.destdir}}" dist/sphinxcontrib_qthelp*.whl
+
+    '
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/beartype/
-package:
-  name: py3-beartype
-  version: 0.18.5
-  epoch: 0
-  description: Unbearably fast runtime type checking in pure Python.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,23 +8,28 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Unbearably fast runtime type checking in pure Python.
+  epoch: 0
+  name: py3-beartype
+  version: 0.18.5
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 7e9eef4868f9c0a140ca7db973fbc17abb3a5702
       repository: https://github.com/beartype/beartype
       tag: v${{package.version}}
-      expected-commit: 7e9eef4868f9c0a140ca7db973fbc17abb3a5702
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
-
-update:
-  enabled: true
-  github:
-    identifier: beartype/beartype
-    strip-prefix: v
 
 test:
   environment:
@@ -44,5 +37,13 @@ test:
       packages:
         - python-3
   pipeline:
-    - runs: |
-        python -c "import beartype; print(beartype.__version__)"
+    - runs: 'python -c "import beartype; print(beartype.__version__)"
+
+      '
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: beartype/beartype
+    strip-prefix: v

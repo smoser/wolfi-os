@@ -1,29 +1,3 @@
-# Generated from https://pypi.org/project/ipython/
-package:
-  name: py3-ipython
-  version: 8.16.0
-  epoch: 1
-  description: 'IPython: Productive Interactive Computing'
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-backcall
-      - py3-decorator
-      - py3-jedi
-      - py3-matplotlib-inline
-      - py3-pickleshare
-      - py3-prompt-toolkit
-      - py3-pygments
-      - py3-stack-data
-      - py3-traitlets
-      - py3-typing-extensions
-      - py3-exceptiongroup
-      - py3-pexpect
-      - py3-appnope
-      - py3-colorama
-      - python-3
-
 environment:
   contents:
     packages:
@@ -33,6 +7,31 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-appnope
+      - py3-backcall
+      - py3-colorama
+      - py3-decorator
+      - py3-exceptiongroup
+      - py3-jedi
+      - py3-matplotlib-inline
+      - py3-pexpect
+      - py3-pickleshare
+      - py3-prompt-toolkit
+      - py3-pygments
+      - py3-stack-data
+      - py3-traitlets
+      - py3-typing-extensions
+      - python-3
+  description: 'IPython: Productive Interactive Computing'
+  epoch: 1
+  name: py3-ipython
+  version: 8.16.0
 
 pipeline:
   - uses: git-checkout
@@ -46,8 +45,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: ipython/ipython
+  manual: false

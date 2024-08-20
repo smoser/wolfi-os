@@ -1,14 +1,3 @@
-package:
-  name: py3-logfmter
-  version: 0.0.8
-  epoch: 0
-  description: A Python package which supports global logfmt formatted logging.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -19,17 +8,36 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: A Python package which supports global logfmt formatted logging.
+  epoch: 0
+  name: py3-logfmter
+  version: 0.0.8
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/jteppinette/python-logfmter
       expected-commit: 89b4d16d0545d84a7f8aa6a6ca0d038d1b4fc998
+      repository: https://github.com/jteppinette/python-logfmter
       tag: v${{package.version}}
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

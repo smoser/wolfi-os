@@ -1,21 +1,3 @@
-package:
-  name: py3-scikit-optimize
-  version: 0.9.0
-  epoch: 2
-  description: Sequential model-based optimization toolbox.
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - numpy
-      - py3-joblib
-      - py3-matplotlib
-      - py3-pillow
-      - py3-pyyaml
-      - py3-scikit-learn
-      - py3-scipy
-      - python3
-
 environment:
   contents:
     packages:
@@ -29,11 +11,29 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - numpy
+      - py3-joblib
+      - py3-matplotlib
+      - py3-pillow
+      - py3-pyyaml
+      - py3-scikit-learn
+      - py3-scipy
+      - python3
+  description: Sequential model-based optimization toolbox.
+  epoch: 2
+  name: py3-scikit-optimize
+  version: 0.9.0
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/scikit-optimize/scikit-optimize
       expected-commit: a2369ddbc332d16d8ff173b12404b03fea472492
+      repository: https://github.com/scikit-optimize/scikit-optimize
       tag: v${{package.version}}
 
   - name: Python Build
@@ -43,6 +43,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

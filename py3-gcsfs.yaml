@@ -1,9 +1,14 @@
-# Generated from https://pypi.org/project/gcsfs/
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - py3-setuptools
+      - python-3
+      - wolfi-base
+
 package:
-  name: py3-gcsfs
-  version: 2023.9.2
-  epoch: 2
-  description: Convenient Filesystem interface over GCS
   copyright:
     - license: BSD-3-Clause
   dependencies:
@@ -16,16 +21,10 @@ package:
       - py3-google-cloud-storage
       - py3-requests
       - python-3
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-setuptools
-      - python-3
-      - wolfi-base
+  description: Convenient Filesystem interface over GCS
+  epoch: 2
+  name: py3-gcsfs
+  version: 2023.9.2
 
 pipeline:
   - uses: git-checkout
@@ -39,14 +38,15 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  manual: false
-  github:
-    identifier: fsspec/gcsfs
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: gcsfs
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: fsspec/gcsfs
+  manual: false

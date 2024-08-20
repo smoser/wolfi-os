@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/avro-python3/
-package:
-  name: py3-avro-python3
-  version: 1.10.2
-  epoch: 2
-  description: Avro is a serialization and RPC framework.
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: Avro is a serialization and RPC framework.
+  epoch: 2
+  name: py3-avro-python3
+  version: 1.10.2
 
 pipeline:
   - uses: fetch
@@ -30,6 +29,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

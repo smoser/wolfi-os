@@ -1,14 +1,3 @@
-package:
-  name: py3-more-itertools
-  version: 10.4.0
-  epoch: 0
-  description: "more routines for operating on iterables, beyond itertools"
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -18,16 +7,35 @@ environment:
       - py3-pip
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: more routines for operating on iterables, beyond itertools
+  epoch: 0
+  name: py3-more-itertools
+  version: 10.4.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 935db916c76a66ba1190d1cf20d5ade341f62d14
       repository: https://github.com/more-itertools/more-itertools.git
       tag: v${{package.version}}
-      expected-commit: 935db916c76a66ba1190d1cf20d5ade341f62d14
 
   - runs: pip install . --prefix=/usr --root=${{targets.destdir}}
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

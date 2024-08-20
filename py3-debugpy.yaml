@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/debugpy/
-package:
-  name: py3-debugpy
-  version: 1.8.5
-  epoch: 0
-  description: An implementation of the Debug Adapter Protocol for Python
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: An implementation of the Debug Adapter Protocol for Python
+  epoch: 0
+  name: py3-debugpy
+  version: 1.8.5
 
 pipeline:
   - uses: git-checkout
@@ -32,26 +31,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: "LIBRARY=\"debugpy\"\nIMPORT_STATEMENT=\"import debugpy\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
-  ignore-regex-patterns:
-    - 1.6.7.post1
   github:
     identifier: microsoft/debugpy
     strip-prefix: v
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="debugpy"
-        IMPORT_STATEMENT="import debugpy"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi
+  ignore-regex-patterns:
+    - 1.6.7.post1
+  manual: false

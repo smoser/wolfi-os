@@ -1,11 +1,3 @@
-package:
-  name: py3-udev
-  version: 0.24.3
-  epoch: 1
-  description: Python bindings to libudev
-  copyright:
-    - license: LGPL-2.1-or-later
-
 environment:
   contents:
     packages:
@@ -16,6 +8,14 @@ environment:
       - py3-setuptools
       - python3
 
+package:
+  copyright:
+    - license: LGPL-2.1-or-later
+  description: Python bindings to libudev
+  epoch: 1
+  name: py3-udev
+  version: 0.24.3
+
 pipeline:
   - uses: git-checkout
     with:
@@ -23,18 +23,21 @@ pipeline:
       repository: https://github.com/pyudev/pyudev
       tag: v${{package.version}}
 
-  - runs: |
-      python3 setup.py build
-      python3 setup.py install \
-        --skip-build \
-        --prefix=/usr \
-        --root="${{targets.destdir}}"
+  - runs: "python3 setup.py build\npython3 setup.py install \\\n  --skip-build \\\n  --prefix=/usr \\\n  --root=\"${{targets.destdir}}\"\n"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: pyudev/pyudev
+    strip-prefix: v
     use-tag: true
-    strip-prefix: 'v'

@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/async-lru/
-package:
-  name: py3-async-lru
-  version: 2.0.4
-  epoch: 2
-  description: Simple LRU cache for asyncio
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-typing-extensions
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-typing-extensions
+      - python-3
+  description: Simple LRU cache for asyncio
+  epoch: 2
+  name: py3-async-lru
+  version: 2.0.4
 
 pipeline:
   - uses: git-checkout
@@ -33,10 +32,18 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: aio-libs/async-lru
     strip-prefix: v
     use-tag: true
+  manual: false

@@ -1,18 +1,3 @@
-# Generated from https://pypi.org/project/itables/
-package:
-  name: py3-itables
-  version: 2.1.4
-  epoch: 0
-  description: Interactive Tables in Jupyter
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-ipython
-      - py3-pandas
-      - numpy
-      - python-3
-
 environment:
   contents:
     packages:
@@ -25,8 +10,21 @@ environment:
       - python-3
       - wolfi-base
   environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
     SOURCE_DATE_EPOCH: 315532800
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - numpy
+      - py3-ipython
+      - py3-pandas
+      - python-3
+  description: Interactive Tables in Jupyter
+  epoch: 0
+  name: py3-itables
+  version: 2.1.4
 
 pipeline:
   - uses: git-checkout
@@ -40,15 +38,16 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  manual: false
-  github:
-    identifier: mwouts/itables
-    strip-prefix: v
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: itables
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: mwouts/itables
+    strip-prefix: v
+  manual: false

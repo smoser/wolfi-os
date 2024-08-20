@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/testpath/
-package:
-  name: py3-testpath
-  version: 0.6.0
-  epoch: 2
-  description: Test utilities for code working with files and commands
-  copyright:
-    - license: "BSD-3-Clause"
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Test utilities for code working with files and commands
+  epoch: 2
+  name: py3-testpath
+  version: 0.6.0
 
 pipeline:
   - uses: git-checkout
@@ -32,9 +31,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jupyter/testpath
     use-tag: true
+  manual: false

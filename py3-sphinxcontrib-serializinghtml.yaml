@@ -1,15 +1,3 @@
-package:
-  name: py3-sphinxcontrib-serializinghtml
-  version: 2.0.0
-  epoch: 0
-  description: sphinxcontrib-serializinghtml is a sphinx extension which outputs "serialized" HTML files (json and pickle)
-  copyright:
-    - license: BSD-2-Clause
-  dependencies:
-    runtime:
-      - py3-sphinx
-      - python3
-
 environment:
   contents:
     packages:
@@ -23,21 +11,43 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-2-Clause
+  dependencies:
+    runtime:
+      - py3-sphinx
+      - python3
+  description: sphinxcontrib-serializinghtml is a sphinx extension which outputs "serialized" HTML files (json and pickle)
+  epoch: 0
+  name: py3-sphinxcontrib-serializinghtml
+  version: 2.0.0
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/sphinx-doc/sphinxcontrib-serializinghtml
       expected-commit: f0f3b15b2e6bb47570d605ebd5687643d7a85b9d
+      repository: https://github.com/sphinx-doc/sphinxcontrib-serializinghtml
       tag: ${{package.version}}
 
   - name: Python Build
-    runs: |
-      python3 -m build
+    runs: 'python3 -m build
 
-  - runs: |
-      python3 -m installer -d "${{targets.destdir}}" dist/sphinxcontrib_serializinghtml*.whl
+    '
+
+  - runs: 'python3 -m installer -d "${{targets.destdir}}" dist/sphinxcontrib_serializinghtml*.whl
+
+    '
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

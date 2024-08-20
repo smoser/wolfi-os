@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/dulwich/
-package:
-  name: py3-dulwich
-  version: 0.22.1
-  epoch: 1
-  description: Python Git Library
-  copyright:
-    - license: Apache-2.0 AND GPL-2.0-or-later
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,36 +8,37 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0 AND GPL-2.0-or-later
+  dependencies:
+    runtime:
+      - python-3
+  description: Python Git Library
+  epoch: 1
+  name: py3-dulwich
+  version: 0.22.1
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 0fa636dc03e43477199ad7aefd917b628e93b29d
       repository: https://github.com/jelmer/dulwich
       tag: dulwich-${{package.version}}
-      expected-commit: 0fa636dc03e43477199ad7aefd917b628e93b29d
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: "LIBRARY=\"dulwich\"\nIMPORT_STATEMENT=\"import dulwich\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
     identifier: jelmer/dulwich
-    tag-filter: dulwich-
     strip-prefix: dulwich-
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="dulwich"
-        IMPORT_STATEMENT="import dulwich"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi
+    tag-filter: dulwich-

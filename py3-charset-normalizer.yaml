@@ -1,12 +1,9 @@
-package:
-  name: py3-charset-normalizer
-  version: 3.3.2
-  epoch: 5
-  description: "offers you an alternative to Universal Charset Encoding Detector, also known as Chardet"
-  copyright:
-    - license: MIT
-  dependencies:
-    provider-priority: 0
+data:
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -18,48 +15,53 @@ environment:
       - py3-supported-setuptools
       - py3-supported-wheel
 
-vars:
-  pypi-package: charset-normalizer
-  module-name: charset_normalizer
-
-data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    provider-priority: 0
+  description: offers you an alternative to Universal Charset Encoding Detector, also known as Chardet
+  epoch: 5
+  name: py3-charset-normalizer
+  version: 3.3.2
 
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 79dce4857914fead2ffe55eb787cad6d5cf14643
       repository: https://github.com/jawah/charset_normalizer.git
       tag: ${{package.version}}
-      expected-commit: 79dce4857914fead2ffe55eb787cad6d5cf14643
 
-  - runs: |
-      sed -i '/cov-report/d' setup.cfg
+  - runs: 'sed -i ''/cov-report/d'' setup.cfg
+
+    '
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             import: ${{vars.module-name}}
+            python: python${{range.key}}
+        - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: jawah/charset_normalizer
+
+vars:
+  module-name: charset_normalizer
+  pypi-package: charset-normalizer

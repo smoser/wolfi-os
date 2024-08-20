@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/pexpect/
-package:
-  name: py3-pexpect
-  version: 4.8.0
-  epoch: 4
-  description: Pexpect allows easy control of interactive console applications.
-  copyright:
-    - license: ISC
-  dependencies:
-    runtime:
-      - py3-ptyprocess
-      - python3
-
 environment:
   contents:
     packages:
@@ -23,17 +10,37 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: ISC
+  dependencies:
+    runtime:
+      - py3-ptyprocess
+      - python3
+  description: Pexpect allows easy control of interactive console applications.
+  epoch: 4
+  name: py3-pexpect
+  version: 4.8.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 5eed1a31a2853a09b7367c59fbd1a4a0b53341df
       repository: https://github.com/pexpect/pexpect
       tag: ${{package.version}}
-      expected-commit: 5eed1a31a2853a09b7367c59fbd1a4a0b53341df
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   github:

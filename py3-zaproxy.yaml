@@ -1,15 +1,3 @@
-package:
-  name: py3-zaproxy
-  version: 0.3.2
-  epoch: 1
-  description: ZAP Python API
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-requests
-      - py3-six
-
 environment:
   contents:
     packages:
@@ -18,11 +6,23 @@ environment:
       - ca-certificates-bundle
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-requests
+      - py3-six
+  description: ZAP Python API
+  epoch: 1
+  name: py3-zaproxy
+  version: 0.3.2
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/zaproxy/zap-api-python/
       expected-commit: a779d751b3d7c20cb629c760c4cef0da0796dc6f
+      repository: https://github.com/zaproxy/zap-api-python/
       tag: ${{package.version}}
 
   - name: Python Build
@@ -34,13 +34,15 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import zapv2
+        imports: 'import zapv2
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true
-  ignore-regex-patterns:
-    - '.*\.dev1$'
   github:
     identifier: zaproxy/zap-api-python
     use-tag: true
+  ignore-regex-patterns:
+    - .*\.dev1$

@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/zope.event/
-package:
-  name: py3-zope.event
-  version: "5.0"
-  epoch: 0
-  description: Very basic event publishing system
-  copyright:
-    - license: ZPL-2.1
-  dependencies:
-    runtime:
-      - py3-setuptools
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: ZPL-2.1
+  dependencies:
+    runtime:
+      - py3-setuptools
+      - python-3
+  description: Very basic event publishing system
+  epoch: 0
+  name: py3-zope.event
+  version: '5.0'
 
 pipeline:
   - uses: git-checkout
@@ -36,9 +35,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: zopefoundation/zope.event
     use-tag: true
+  manual: false

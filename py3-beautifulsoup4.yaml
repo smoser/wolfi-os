@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/beautifulsoup4/
-package:
-  name: py3-beautifulsoup4
-  version: 4.12.3
-  epoch: 0
-  description: Screen-scraping library
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-soupsieve
-      - python-3
-
 environment:
   contents:
     packages:
@@ -21,8 +8,19 @@ environment:
       - python-3
       - wolfi-base
   environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
     SOURCE_DATE_EPOCH: 315532800
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-soupsieve
+      - python-3
+  description: Screen-scraping library
+  epoch: 0
+  name: py3-beautifulsoup4
+  version: 4.12.3
 
 pipeline:
   - uses: fetch
@@ -35,24 +33,14 @@ pipeline:
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: "LIBRARY=\"beautifulsoup4\"\nIMPORT_STATEMENT=\"from bs4 import BeautifulSoup\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
+
 update:
   enabled: true
   ignore-regex-patterns:
-    - 'b\d+'
+    - b\d+
   release-monitor:
     identifier: 3779
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="beautifulsoup4"
-        IMPORT_STATEMENT="from bs4 import BeautifulSoup"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

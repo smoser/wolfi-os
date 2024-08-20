@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/fasteners/
-package:
-  name: py3-fasteners
-  version: "0.19"
-  epoch: 1
-  description: A python package that provides useful locks
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: A python package that provides useful locks
+  epoch: 1
+  name: py3-fasteners
+  version: '0.19'
 
 pipeline:
   - uses: git-checkout
@@ -32,14 +31,15 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  manual: false
-  github:
-    identifier: harlowja/fasteners
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: fasteners
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: harlowja/fasteners
+  manual: false

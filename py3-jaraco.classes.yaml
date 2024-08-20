@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/jaraco.classes/
-package:
-  name: py3-jaraco.classes
-  version: 3.4.0
-  epoch: 2
-  description: Utility functions for Python class constructs
-  copyright:
-    - license: "MIT"
-  dependencies:
-    runtime:
-      - py3-more-itertools
-      - python3
-
 environment:
   contents:
     packages:
@@ -22,6 +9,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-more-itertools
+      - python3
+  description: Utility functions for Python class constructs
+  epoch: 2
+  name: py3-jaraco.classes
+  version: 3.4.0
 
 pipeline:
   - uses: git-checkout
@@ -35,9 +34,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
     identifier: jaraco/jaraco.classes
-    use-tag: true
     strip-prefix: v
+    use-tag: true

@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/patiencediff/
-package:
-  name: py3-patiencediff
-  version: 0.2.15
-  epoch: 0
-  description: Python implementation of the patiencediff algorithm
-  copyright:
-    - license: GPL-2.0-or-later
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -17,6 +5,17 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: GPL-2.0-or-later
+  dependencies:
+    runtime:
+      - python-3
+  description: Python implementation of the patiencediff algorithm
+  epoch: 0
+  name: py3-patiencediff
+  version: 0.2.15
 
 pipeline:
   - uses: fetch
@@ -34,19 +33,13 @@ test:
     - uses: python/import
       with:
         import: patiencediff
-    - runs: |
-        python <<'EOF'
-        import patiencediff
-        got = ''.join(patiencediff.unified_diff(
-          ['a\n', 'b\n', 'b\n', 'c\n'],
-          ['a\n', 'c\n', 'b\n']))
-        assert '+++' in got
-        EOF
+    - runs: "python <<'EOF'\nimport patiencediff\ngot = ''.join(patiencediff.unified_diff(\n  ['a\\n', 'b\\n', 'b\\n', 'c\\n'],\n  ['a\\n', 'c\\n', 'b\\n']))\nassert '+++' in got\nEOF\n"
+    - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: breezy-team/patiencediff
-    use-tag: true
     strip-prefix: v
     tag-filter-prefix: v
+    use-tag: true

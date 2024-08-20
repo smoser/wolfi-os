@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/nullauthenticator/
-package:
-  name: py3-nullauthenticator
-  version: 1.0.0
-  epoch: 0
-  description: 'JupyterHub: A multi-user server for Jupyter notebooks'
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-jupyterhub
-      - python-3
-
 environment:
   contents:
     packages:
@@ -21,6 +8,18 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-jupyterhub
+      - python-3
+  description: 'JupyterHub: A multi-user server for Jupyter notebooks'
+  epoch: 0
+  name: py3-nullauthenticator
+  version: 1.0.0
+
 pipeline:
   - uses: git-checkout
     with:
@@ -29,18 +28,28 @@ pipeline:
       tag: ${{package.version}}
 
   - name: Python Build
-    runs: |
-      python setup.py build
+    runs: 'python setup.py build
+
+    '
 
   - name: Python Install
-    runs: |
-      python setup.py install --prefix=/usr --root="${{targets.destdir}}"
+    runs: 'python setup.py install --prefix=/usr --root="${{targets.destdir}}"
+
+    '
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jupyterhub/nullauthenticator
     use-tag: true
+  manual: false

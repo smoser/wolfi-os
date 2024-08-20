@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/sqlalchemy-cockroachdb/
-package:
-  name: py3-sqlalchemy-cockroachdb
-  version: 2.0.2
-  epoch: 0
-  description: CockroachDB dialect for SQLAlchemy
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-sqlalchemy
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-sqlalchemy
+      - python-3
+  description: CockroachDB dialect for SQLAlchemy
+  epoch: 0
+  name: py3-sqlalchemy-cockroachdb
+  version: 2.0.2
 
 pipeline:
   - uses: fetch
@@ -31,6 +30,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,19 +1,3 @@
-# Generated from https://pypi.org/project/google-api-core/
-package:
-  name: py3-google-api-core
-  version: 2.19.1
-  epoch: 0
-  description: Google API client core library
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-googleapis-common-protos
-      - py3-protobuf
-      - py3-google-auth
-      - py3-requests
-      - python-3
-
 environment:
   contents:
     packages:
@@ -23,6 +7,21 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-google-auth
+      - py3-googleapis-common-protos
+      - py3-protobuf
+      - py3-requests
+      - python-3
+  description: Google API client core library
+  epoch: 0
+  name: py3-google-api-core
+  version: 2.19.1
 
 pipeline:
   - uses: git-checkout
@@ -36,9 +35,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: googleapis/python-api-core
     strip-prefix: v
+  manual: false

@@ -1,14 +1,3 @@
-package:
-  name: py3-pycurl
-  version: 7.45.3
-  epoch: 0
-  description: PycURL -- A Python Interface To The cURL library
-  copyright:
-    - license: LGPL-2.1-or-later AND MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,12 +11,16 @@ environment:
       - python-3-dev
       - wolfi-base
 
-# transform melange version from REL_7_45_2 to 7.45.2
-var-transforms:
-  - from: ${{package.version}}
-    match: \.
-    replace: _
-    to: mangled-package-version
+package:
+  copyright:
+    - license: LGPL-2.1-or-later AND MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: PycURL -- A Python Interface To The cURL library
+  epoch: 0
+  name: py3-pycurl
+  version: 7.45.3
 
 pipeline:
   - uses: git-checkout
@@ -41,11 +34,25 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  version-separator: _
   github:
     identifier: pycurl/pycurl
     strip-prefix: REL_
     tag-filter: REL_
     use-tag: true
+  version-separator: _
+
+var-transforms:
+  - from: ${{package.version}}
+    match: \.
+    replace: _
+    to: mangled-package-version

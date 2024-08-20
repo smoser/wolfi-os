@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/tzlocal/
-package:
-  name: py3-tzlocal
-  version: "5.2"
-  epoch: 0
-  description: tzinfo object for the local timezone
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-tzdata
-
 environment:
   contents:
     packages:
@@ -17,6 +5,17 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-tzdata
+  description: tzinfo object for the local timezone
+  epoch: 0
+  name: py3-tzlocal
+  version: '5.2'
 
 pipeline:
   - uses: fetch
@@ -33,15 +32,22 @@ test:
   pipeline:
     - uses: python/import
       with:
-        python: python3.12
         import: tzlocal
-    - runs: |
-        cat <<'EOF' >> /tmp/test.py
+        python: python3.12
+    - runs: 'cat <<''EOF'' >> /tmp/test.py
+
         from tzlocal import get_localzone
+
         tz = get_localzone()
+
         tz
+
         EOF
+
         python3 /tmp/test.py
+
+      '
+    - uses: py/pip-check
 
 update:
   enabled: true

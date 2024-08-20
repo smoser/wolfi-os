@@ -1,14 +1,3 @@
-package:
-  name: py3-alabaster
-  version: 1.0.0
-  epoch: 0
-  description: A configurable sidebar-enabled Sphinx theme
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -19,22 +8,28 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python3
+  description: A configurable sidebar-enabled Sphinx theme
+  epoch: 0
+  name: py3-alabaster
+  version: 1.0.0
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/bitprophet/alabaster
       expected-commit: fba58a43980385019ceb593f88ab8821e17840c0
+      repository: https://github.com/bitprophet/alabaster
       tag: ${{package.version}}
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
-
-update:
-  enabled: true
-  github:
-    identifier: bitprophet/alabaster
 
 test:
   environment:
@@ -45,3 +40,9 @@ test:
     - uses: python/import
       with:
         import: alabaster
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: bitprophet/alabaster

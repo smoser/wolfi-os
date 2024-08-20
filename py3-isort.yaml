@@ -1,14 +1,3 @@
-package:
-  name: py3-isort
-  version: 5.13.2
-  epoch: 0
-  description: A Python utility / library to sort imports.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -22,12 +11,23 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: A Python utility / library to sort imports.
+  epoch: 0
+  name: py3-isort
+  version: 5.13.2
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: c655831799765e9593989ee12faba13b6ca391a5
       repository: https://github.com/PyCQA/isort
       tag: ${{package.version}}
-      expected-commit: c655831799765e9593989ee12faba13b6ca391a5
 
   - name: Python Build
     runs: python -m build
@@ -36,11 +36,6 @@ pipeline:
     runs: python -m installer -d "${{targets.destdir}}/" dist/*.whl
 
   - uses: strip
-
-update:
-  enabled: true
-  github:
-    identifier: PyCQA/isort
 
 test:
   environment:
@@ -51,3 +46,9 @@ test:
     - uses: python/import
       with:
         import: isort
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: PyCQA/isort

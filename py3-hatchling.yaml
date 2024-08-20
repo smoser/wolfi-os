@@ -1,22 +1,9 @@
-package:
-  name: py3-hatchling
-  version: 1.25.0
-  epoch: 2
-  description: "Modern, extensible Python build backend"
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    provider-priority: 0
-
-vars:
-  pypi-package: hatchling
-
 data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -34,6 +21,16 @@ environment:
       - py3-supported-wheel
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    provider-priority: 0
+  description: Modern, extensible Python build backend
+  epoch: 2
+  name: py3-hatchling
+  version: 1.25.0
+
 pipeline:
   - uses: git-checkout
     with:
@@ -42,10 +39,8 @@ pipeline:
       tag: hatchling-v${{package.version}}
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
       runtime:
@@ -54,46 +49,43 @@ subpackages:
         - py${{range.key}}-pluggy
         - py${{range.key}}-tomli
         - py${{range.key}}-trove-classifiers
-      provider-priority: ${{range.value}}
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
-      - runs: |
-          # TODO(pnasrat): refactor when melange fix subpackage with range working-dir
-          # This is inline stripped down from pipelines/py/pip-build-install.yaml
-          cd backend
-          export SOURCE_DATE_EPOCH=315532800
-          mkdir dist
-          python${{range.key}} -m pip wheel -w dist --no-index --no-build-isolation --no-deps .
-          python${{range.key}} -m pip install --no-index --no-build-isolation --no-deps \
-            --force-reinstall --no-compile --prefix=/usr --root=${{targets.subpkgdir}} dist/*.whl
+      - runs: "# TODO(pnasrat): refactor when melange fix subpackage with range working-dir\n# This is inline stripped down from pipelines/py/pip-build-install.yaml\ncd backend\nexport SOURCE_DATE_EPOCH=315532800\nmkdir dist\npython${{range.key}} -m pip wheel -w dist --no-index --no-build-isolation --no-deps .\npython${{range.key}} -m pip install --no-index --no-build-isolation --no-deps \\\n  --force-reinstall --no-compile --prefix=/usr --root=${{targets.subpkgdir}} dist/*.whl\n"
       - runs: rm -rf backend/dist
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             import: ${{vars.pypi-package}}
+            python: python${{range.key}}
+        - uses: py/pip-check
 
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}-bin
-    description: Executable binaries for ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
-      runtime:
-        - py${{range.key}}-${{vars.pypi-package}}
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+      runtime:
+        - py${{range.key}}-${{vars.pypi-package}}
+    description: Executable binaries for ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}-bin
     pipeline:
-      - runs: |
-          mkdir -p ${{targets.contextdir}}/usr
+      - runs: 'mkdir -p ${{targets.contextdir}}/usr
+
           mv ${{targets.contextdir}}/../py${{range.key}}-${{vars.pypi-package}}/usr/bin ${{targets.contextdir}}/usr
 
-  - name: py3-supported-${{vars.pypi-package}}
-    description: meta package providing ${{vars.pypi-package}} for supported python versions.
-    dependencies:
+        '
+    range: py-versions
+
+  - dependencies:
       runtime:
         - py3.10-${{vars.pypi-package}}
         - py3.11-${{vars.pypi-package}}
         - py3.12-${{vars.pypi-package}}
+    description: meta package providing ${{vars.pypi-package}} for supported python versions.
+    name: py3-supported-${{vars.pypi-package}}
 
 update:
   enabled: true
@@ -101,3 +93,6 @@ update:
     identifier: pypa/hatch
     strip-prefix: hatchling-v
     tag-filter: hatchling-v
+
+vars:
+  pypi-package: hatchling

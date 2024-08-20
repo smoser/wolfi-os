@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/jupyterlab-packaging/
-package:
-  name: py3-jupyter-packaging
-  version: 0.12.3
-  epoch: 2
-  description: Tools to help build and install Jupyter Python packages
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -23,8 +11,18 @@ environment:
       - python-3
       - wolfi-base
   environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
     SOURCE_DATE_EPOCH: 315532800
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Tools to help build and install Jupyter Python packages
+  epoch: 2
+  name: py3-jupyter-packaging
+  version: 0.12.3
 
 pipeline:
   - uses: git-checkout
@@ -38,9 +36,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jupyter/jupyter-packaging
     strip-prefix: v
+  manual: false

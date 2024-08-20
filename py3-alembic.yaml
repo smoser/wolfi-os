@@ -1,25 +1,3 @@
-package:
-  name: py3-alembic
-  version: 1.11.3
-  epoch: 4
-  description: A database migration tool for SQLAlchemy.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-dateutil
-      - py3-mako
-      - py3-python-editor
-      - py3-sqlalchemy
-      - python3
-
-# transform melange version 1.11.3 => 1_11_3
-var-transforms:
-  - from: ${{package.version}}
-    match: \.
-    replace: _
-    to: mangled-package-version
-
 environment:
   contents:
     packages:
@@ -30,11 +8,26 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-dateutil
+      - py3-mako
+      - py3-python-editor
+      - py3-sqlalchemy
+      - python3
+  description: A database migration tool for SQLAlchemy.
+  epoch: 4
+  name: py3-alembic
+  version: 1.11.3
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/sqlalchemy/alembic
       expected-commit: 47850ab7dbc88905db8abf7abab6a48699d4a50a
+      repository: https://github.com/sqlalchemy/alembic
       tag: rel_${{vars.mangled-package-version}}
 
   - name: Python Build
@@ -45,9 +38,23 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: false
-  manual: true
   exclude-reason: This requires manual updates because of the strange tagging scheme.
   github:
     identifier: sqlalchemy/alembic
+  manual: true
+
+var-transforms:
+  - from: ${{package.version}}
+    match: \.
+    replace: _
+    to: mangled-package-version

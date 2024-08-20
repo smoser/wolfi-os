@@ -1,15 +1,3 @@
-package:
-  name: py3-click-aliases
-  version: 1.0.4
-  epoch: 0
-  description: enable aliases for click
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-click
-      - python3
-
 environment:
   contents:
     packages:
@@ -21,12 +9,24 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-click
+      - python3
+  description: enable aliases for click
+  epoch: 0
+  name: py3-click-aliases
+  version: 1.0.4
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 6a1922627f09b3de24acd66a81bc7e6fa27fd205
       repository: https://github.com/click-contrib/click-aliases
       tag: v${{package.version}}
-      expected-commit: 6a1922627f09b3de24acd66a81bc7e6fa27fd205
 
   - name: Python Build
     runs: python setup.py build
@@ -35,6 +35,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

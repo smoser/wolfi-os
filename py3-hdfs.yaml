@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/hdfs/
-package:
-  name: py3-hdfs
-  version: 2.7.3
-  epoch: 0
-  description: 'HdfsCLI: API and command line interface for HDFS.'
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: 'HdfsCLI: API and command line interface for HDFS.'
+  epoch: 0
+  name: py3-hdfs
+  version: 2.7.3
 
 pipeline:
   - uses: fetch
@@ -30,6 +29,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/dill/
-package:
-  name: py3-dill
-  version: 0.3.8
-  epoch: 0
-  description: serialize all of Python
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: serialize all of Python
+  epoch: 0
+  name: py3-dill
+  version: 0.3.8
 
 pipeline:
   - uses: git-checkout
@@ -32,24 +31,14 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  ignore-regex-patterns:
-    - dill-
-  github:
-    identifier: uqfoundation/dill
-
 test:
   pipeline:
-    - runs: |
-        LIBRARY="dill"
-        IMPORT_STATEMENT="import dill"
+    - runs: "LIBRARY=\"dill\"\nIMPORT_STATEMENT=\"import dill\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
 
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi
+update:
+  enabled: true
+  github:
+    identifier: uqfoundation/dill
+  ignore-regex-patterns:
+    - dill-

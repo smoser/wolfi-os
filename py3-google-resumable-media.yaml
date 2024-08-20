@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/google-resumable-media/
-package:
-  name: py3-google-resumable-media
-  version: 2.7.2
-  epoch: 0
-  description: Utilities for Google Media Downloads and Resumable Uploads
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-google-crc32c
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-google-crc32c
+      - python-3
+  description: Utilities for Google Media Downloads and Resumable Uploads
+  epoch: 0
+  name: py3-google-resumable-media
+  version: 2.7.2
 
 pipeline:
   - uses: git-checkout
@@ -33,9 +32,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: googleapis/google-resumable-media-python
     strip-prefix: v
+  manual: false

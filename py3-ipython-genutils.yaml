@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/ipython_genutils/
-package:
-  name: py3-ipython-genutils
-  version: 0.2.0
-  epoch: 2
-  description: Vestigial utilities from IPython
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Vestigial utilities from IPython
+  epoch: 2
+  name: py3-ipython-genutils
+  version: 0.2.0
 
 pipeline:
   - uses: fetch
@@ -30,6 +29,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

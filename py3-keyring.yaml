@@ -1,21 +1,3 @@
-# Generated from https://pypi.org/project/keyring/
-package:
-  name: py3-keyring
-  version: 25.3.0
-  epoch: 0
-  description: Store and access your passwords safely.
-  copyright:
-    - license: "MIT"
-  dependencies:
-    runtime:
-      - py3-jaraco.classes
-      - py3-importlib-metadata
-      - py3-importlib-resources
-      - py3-SecretStorage
-      - py3-jeepney
-      - py3-pywin32-ctypes
-      - python3
-
 environment:
   contents:
     packages:
@@ -28,17 +10,42 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-SecretStorage
+      - py3-importlib-metadata
+      - py3-importlib-resources
+      - py3-jaraco.classes
+      - py3-jeepney
+      - py3-pywin32-ctypes
+      - python3
+  description: Store and access your passwords safely.
+  epoch: 0
+  name: py3-keyring
+  version: 25.3.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 30eecb95238ed7bfe9ee8472618809967ac90562
       repository: https://github.com/jaraco/keyring
       tag: v${{package.version}}
-      expected-commit: 30eecb95238ed7bfe9ee8472618809967ac90562
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

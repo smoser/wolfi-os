@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/mdit-plain/
-package:
-  name: py3-mdit-plain
-  version: 1.0.1
-  epoch: 1
-  description: A plain text renderer for markdown-it-py
-  copyright:
-    - license: "MIT"
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: A plain text renderer for markdown-it-py
+  epoch: 1
+  name: py3-mdit-plain
+  version: 1.0.1
 
 pipeline:
   - uses: fetch
@@ -30,6 +29,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: false

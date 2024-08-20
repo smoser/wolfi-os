@@ -1,15 +1,3 @@
-package:
-  name: py3-markdown-it-py
-  version: 3.0.0
-  epoch: 2
-  description: "Python port of markdown-it. Markdown parsing, done right!"
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-mdurl
-      - python3
-
 environment:
   contents:
     packages:
@@ -22,26 +10,36 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-mdurl
+      - python3
+  description: Python port of markdown-it. Markdown parsing, done right!
+  epoch: 2
+  name: py3-markdown-it-py
+  version: 3.0.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: bee6d1953be75717a3f2f6a917da6f464bed421d
       repository: https://github.com/executablebooks/markdown-it-py
       tag: v${{package.version}}
-      expected-commit: bee6d1953be75717a3f2f6a917da6f464bed421d
 
-  - runs: |
-      python3 -m gpep517 build-wheel \
-        --wheel-dir dist \
-        --output-fd 3 3>&1 >&2
-      python3 -m installer \
-        -d "${{targets.destdir}}" \
-        dist/markdown_it_py-${{package.version}}-*.whl
-      install -Dm644 LICENSE \
-        "${{targets.destdir}}"/usr/share/licenses/${{package.name}}/LICENSE
-      install -Dm644 LICENSE.markdown-it \
-        "${{targets.destdir}}"/usr/share/licenses/${{package.name}}/LICENSE.markdown-it
+  - runs: "python3 -m gpep517 build-wheel \\\n  --wheel-dir dist \\\n  --output-fd 3 3>&1 >&2\npython3 -m installer \\\n  -d \"${{targets.destdir}}\" \\\n  dist/markdown_it_py-${{package.version}}-*.whl\ninstall -Dm644 LICENSE \\\n  \"${{targets.destdir}}\"/usr/share/licenses/${{package.name}}/LICENSE\ninstall -Dm644 LICENSE.markdown-it \\\n  \"${{targets.destdir}}\"/usr/share/licenses/${{package.name}}/LICENSE.markdown-it\n"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

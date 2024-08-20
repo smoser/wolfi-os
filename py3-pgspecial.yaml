@@ -1,17 +1,3 @@
-package:
-  name: py3-pgspecial
-  version: 2.1.2
-  epoch: 0
-  description: Meta-commands handler for Postgres Database.
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-click
-      - py3-psycopg
-      - py3-sqlparse
-      - python3
-
 environment:
   contents:
     packages:
@@ -22,12 +8,26 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-click
+      - py3-psycopg
+      - py3-sqlparse
+      - python3
+  description: Meta-commands handler for Postgres Database.
+  epoch: 0
+  name: py3-pgspecial
+  version: 2.1.2
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 2be16abcaa88cccaf99ce3062cca6ecfc632eb67
       repository: https://github.com/dbcli/pgspecial
       tag: v${{package.version}}
-      expected-commit: 2be16abcaa88cccaf99ce3062cca6ecfc632eb67
 
   - name: Python Build
     runs: python setup.py build
@@ -36,6 +36,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

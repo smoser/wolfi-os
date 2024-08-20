@@ -1,18 +1,3 @@
-# Generated from https://pypi.org/project/stack-data/
-package:
-  name: py3-stack-data
-  version: 0.6.3
-  epoch: 1
-  description: Extract data from python stack frames and tracebacks for informative displays
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-executing
-      - py3-asttokens
-      - py3-pure-eval
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,6 +7,20 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-asttokens
+      - py3-executing
+      - py3-pure-eval
+      - python-3
+  description: Extract data from python stack frames and tracebacks for informative displays
+  epoch: 1
+  name: py3-stack-data
+  version: 0.6.3
 
 pipeline:
   - uses: git-checkout
@@ -35,10 +34,18 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: alexmojaki/stack_data
     strip-prefix: v
     use-tag: true
+  manual: false

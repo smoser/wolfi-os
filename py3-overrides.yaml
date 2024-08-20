@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/overrides/
-package:
-  name: py3-overrides
-  version: 7.7.0
-  epoch: 0
-  description: A decorator to automatically detect mismatch when overriding a method.
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-typing
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-typing
+      - python-3
+  description: A decorator to automatically detect mismatch when overriding a method.
+  epoch: 0
+  name: py3-overrides
+  version: 7.7.0
 
 pipeline:
   - uses: git-checkout
@@ -33,8 +32,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: mkorpela/overrides
+  manual: false

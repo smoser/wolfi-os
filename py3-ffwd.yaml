@@ -1,12 +1,3 @@
-# Generated from https://pypi.org/project/ffwd/
-package:
-  name: py3-ffwd
-  version: 0.0.2
-  epoch: 2
-  description: A Python client for FFWD
-  copyright:
-    - license: Apache-2.0
-
 environment:
   contents:
     packages:
@@ -14,6 +5,14 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  description: A Python client for FFWD
+  epoch: 2
+  name: py3-ffwd
+  version: 0.0.2
 
 pipeline:
   - uses: fetch
@@ -30,8 +29,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import ffwd
+        imports: 'import ffwd
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: false

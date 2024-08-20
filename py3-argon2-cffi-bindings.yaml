@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/argon2-cffi-bindings/
-package:
-  name: py3-argon2-cffi-bindings
-  version: 21.2.0
-  epoch: 2
-  description: Low-level CFFI bindings for Argon2
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -26,6 +14,17 @@ environment:
   environment:
     ARGON2_CFFI_USE_SYSTEM: 1
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Low-level CFFI bindings for Argon2
+  epoch: 2
+  name: py3-argon2-cffi-bindings
+  version: 21.2.0
+
 pipeline:
   - uses: git-checkout
     with:
@@ -38,8 +37,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: hynek/argon2-cffi-bindings
+  manual: false

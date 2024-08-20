@@ -1,17 +1,3 @@
-package:
-  name: py3-botocore
-  version: 1.35.0
-  epoch: 0
-  description: The low-level, core functionality of Boto3
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-dateutil
-      - py3-docutils
-      - py3-jmespath
-      - py3-urllib3
-
 environment:
   contents:
     packages:
@@ -22,39 +8,44 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-dateutil
+      - py3-docutils
+      - py3-jmespath
+      - py3-urllib3
+  description: The low-level, core functionality of Boto3
+  epoch: 0
+  name: py3-botocore
+  version: 1.35.0
+
 pipeline:
   - uses: fetch
     with:
-      uri: https://files.pythonhosted.org/packages/source/b/botocore/botocore-${{package.version}}.tar.gz
       expected-sha256: 6ab2f5a5cbdaa639599e3478c65462c6d6a10173dc8b941bfc69b0c9eb548f45
+      uri: https://files.pythonhosted.org/packages/source/b/botocore/botocore-${{package.version}}.tar.gz
 
-  - runs: |
-      python3 setup.py build
+  - runs: 'python3 setup.py build
 
-  - runs: |
-      python3 setup.py install --prefix=/usr --root="${{targets.contextdir}}" --skip-build
+    '
 
-  # Fix permissions; this has 777 permissions by default.
+  - runs: 'python3 setup.py install --prefix=/usr --root="${{targets.contextdir}}" --skip-build
+
+    '
+
   - runs: chmod -R 755 ${{targets.contextdir}}/usr/lib/python3.12/site-packages/botocore/data/ec2/2016-11-15/waiters-2.json
 
   - uses: strip
+
+test:
+  pipeline:
+    - runs: "LIBRARY=\"botocore\"\nIMPORT_STATEMENT=\"import botocore\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
 
 update:
   enabled: true
   release-monitor:
     identifier: 29738
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="botocore"
-        IMPORT_STATEMENT="import botocore"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

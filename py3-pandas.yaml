@@ -1,18 +1,3 @@
-package:
-  name: py3-pandas
-  version: 2.2.2
-  epoch: 0
-  description: Powerful data structures for data analysis, time series, and statistics
-  copyright:
-    - license: 'BSD-3-Clause'
-  dependencies:
-    runtime:
-      - numpy
-      - py3-dateutil
-      - py3-tz
-      - py3-tzdata
-      - python-3
-
 environment:
   contents:
     packages:
@@ -34,20 +19,47 @@ environment:
       - python-3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - numpy
+      - py3-dateutil
+      - py3-tz
+      - py3-tzdata
+      - python-3
+  description: Powerful data structures for data analysis, time series, and statistics
+  epoch: 0
+  name: py3-pandas
+  version: 2.2.2
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: d9cdd2ee5a58015ef6f4d15c7226110c9aab8140
       repository: https://github.com/pandas-dev/pandas
       tag: v${{package.version}}
-      expected-commit: d9cdd2ee5a58015ef6f4d15c7226110c9aab8140
 
-  - runs: |
-      # You have to do this dance with the FDs because without it things fail.
-      # I don't know why, but other places do this, so I'm just copying them.
+  - runs: '# You have to do this dance with the FDs because without it things fail.
+
+      # I don''t know why, but other places do this, so I''m just copying them.
+
       python3 -m gpep517 build-wheel --wheel-dir dist --output-fd 3 3>&1 >&2
+
       python3 -m installer -d "${{targets.destdir}}" dist/*.whl
 
+    '
+
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

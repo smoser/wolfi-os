@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/pyasn1/
-package:
-  name: py3-pyasn1
-  version: 0.6.0
-  epoch: 0
-  description: Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)
-  copyright:
-    - license: BSD-2-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-2-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)
+  epoch: 0
+  name: py3-pyasn1
+  version: 0.6.0
 
 pipeline:
   - uses: git-checkout
@@ -32,9 +31,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: pyasn1/pyasn1
     strip-prefix: v
+  manual: false

@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/ntia-conformance-checker/
-package:
-  name: py3-ntia-conformance-checker
-  version: 3.0.0
-  epoch: 0
-  description: Check SPDX SBOM for NTIA minimum elements
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-spdx-tools
-
 environment:
   contents:
     packages:
@@ -18,24 +6,36 @@ environment:
       - ca-certificates-bundle
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-spdx-tools
+  description: Check SPDX SBOM for NTIA minimum elements
+  epoch: 0
+  name: py3-ntia-conformance-checker
+  version: 3.0.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 7dca734f8faa276c46e71f3e277cffd3d540f68f
       repository: https://github.com/spdx/ntia-conformance-checker
       tag: v${{package.version}}
-      expected-commit: 7dca734f8faa276c46e71f3e277cffd3d540f68f
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: /usr/bin/ntia-checker --file /var/lib/db/sbom/${{package.name}}-${{package.full-version}}.spdx.json
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
     identifier: spdx/ntia-conformance-checker
     strip-prefix: v
-
-test:
-  pipeline:
-    - runs: /usr/bin/ntia-checker --file /var/lib/db/sbom/${{package.name}}-${{package.full-version}}.spdx.json

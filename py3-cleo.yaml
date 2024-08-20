@@ -1,17 +1,3 @@
-# Generated from https://pypi.org/project/cleo/
-package:
-  name: py3-cleo
-  version: 2.1.0
-  epoch: 2
-  description: Cleo allows you to create beautiful and testable command-line interfaces.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-crashtest
-      - py3-rapidfuzz
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,26 +8,40 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-crashtest
+      - py3-rapidfuzz
+      - python-3
+  description: Cleo allows you to create beautiful and testable command-line interfaces.
+  epoch: 2
+  name: py3-cleo
+  version: 2.1.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: f695cd3de3de03dc617dcb198d26ba2a02081008
       repository: https://github.com/python-poetry/cleo
       tag: ${{package.version}}
-      expected-commit: f695cd3de3de03dc617dcb198d26ba2a02081008
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
 
-update:
-  enabled: true
-  github:
-    identifier: python-poetry/cleo
-    use-tag: true
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: cleo
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: python-poetry/cleo
+    use-tag: true

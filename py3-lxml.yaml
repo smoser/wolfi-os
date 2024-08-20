@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/lxml/
-package:
-  name: py3-lxml
-  version: 5.3.0
-  epoch: 0
-  description: Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API.
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -23,6 +11,17 @@ environment:
       - py3-setuptools
       - python3-dev
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python3
+  description: Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API.
+  epoch: 0
+  name: py3-lxml
+  version: 5.3.0
 
 pipeline:
   - uses: git-checkout
@@ -38,6 +37,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

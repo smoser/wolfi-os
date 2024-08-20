@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/certipy/
-package:
-  name: py3-certipy
-  version: 0.1.3
-  epoch: 2
-  description: Utility to create and sign CAs and certificates
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-pyopenssl
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-pyopenssl
+      - python-3
+  description: Utility to create and sign CAs and certificates
+  epoch: 2
+  name: py3-certipy
+  version: 0.1.3
 
 pipeline:
   - uses: fetch
@@ -31,6 +30,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

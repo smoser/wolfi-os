@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/xyzservices/
-package:
-  name: py3-xyzservices
-  version: 2024.6.0
-  epoch: 0
-  description: Source of XYZ tiles providers
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Source of XYZ tiles providers
+  epoch: 0
+  name: py3-xyzservices
+  version: 2024.6.0
 
 pipeline:
   - uses: git-checkout
@@ -32,8 +31,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: geopandas/xyzservices
+  manual: false

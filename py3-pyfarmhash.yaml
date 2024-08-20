@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/pyfarmhash/
-package:
-  name: py3-pyfarmhash
-  version: 0.3.2
-  epoch: 3
-  description: Google FarmHash Bindings for Python
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +8,17 @@ environment:
       - python-3
       - python-3-dev
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Google FarmHash Bindings for Python
+  epoch: 3
+  name: py3-pyfarmhash
+  version: 0.3.2
 
 pipeline:
   - uses: fetch
@@ -32,7 +31,15 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: false
-  manual: true
   exclude-reason: no releases, tags, and release-monitor id
+  manual: true

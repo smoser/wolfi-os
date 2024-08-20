@@ -1,14 +1,3 @@
-package:
-  name: py3-typing
-  version: 3.10.0.0
-  epoch: 3
-  description: Type Hints for Python
-  copyright:
-    - license: PSF-2.0
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -18,6 +7,17 @@ environment:
       - py3-setuptools
       - python3
       - wolfi-base
+
+package:
+  copyright:
+    - license: PSF-2.0
+  dependencies:
+    runtime:
+      - python3
+  description: Type Hints for Python
+  epoch: 3
+  name: py3-typing
+  version: 3.10.0.0
 
 pipeline:
   - uses: fetch
@@ -33,15 +33,16 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  manual: true # fetch URL contains a sha so will need to be manually
-  shared: true
-  release-monitor:
-    identifier: 10922
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: typing
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  manual: true
+  release-monitor:
+    identifier: 10922
+  shared: true

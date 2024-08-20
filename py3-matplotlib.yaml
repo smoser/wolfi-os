@@ -1,14 +1,3 @@
-package:
-  name: py3-matplotlib
-  version: 3.9.2
-  epoch: 0
-  description: Python plotting package
-  copyright:
-    - license: PSF-2.0
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -34,11 +23,22 @@ environment:
       - python3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: PSF-2.0
+  dependencies:
+    runtime:
+      - python3
+  description: Python plotting package
+  epoch: 0
+  name: py3-matplotlib
+  version: 3.9.2
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/matplotlib/matplotlib
       expected-commit: a254b687df97cda8c6affa37a1dfcf213f8e6c3a
+      repository: https://github.com/matplotlib/matplotlib
       tag: v${{package.version}}
 
   - name: Python Build
@@ -50,12 +50,20 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  ignore-regex-patterns:
-    - 'rc'
-    - 'post'
   github:
     identifier: matplotlib/matplotlib
     strip-prefix: v
     use-tag: true
+  ignore-regex-patterns:
+    - rc
+    - post

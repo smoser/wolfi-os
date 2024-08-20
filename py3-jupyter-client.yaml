@@ -1,9 +1,16 @@
-# Generated from https://pypi.org/project/jupyter-client/
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - py3-setuptools
+      - python-3
+      - wolfi-base
+  environment:
+    SOURCE_DATE_EPOCH: 315532800
+
 package:
-  name: py3-jupyter-client
-  version: 8.6.2
-  epoch: 0
-  description: Jupyter protocol implementation and client libraries
   copyright:
     - license: BSD-3-Clause
   dependencies:
@@ -15,19 +22,10 @@ package:
       - py3-tornado
       - py3-traitlets
       - python-3
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-setuptools
-      - python-3
-      - wolfi-base
-  environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
-    SOURCE_DATE_EPOCH: 315532800
+  description: Jupyter protocol implementation and client libraries
+  epoch: 0
+  name: py3-jupyter-client
+  version: 8.6.2
 
 pipeline:
   - uses: git-checkout
@@ -41,18 +39,20 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  manual: false
-  github:
-    identifier: jupyter/jupyter_client
-    strip-prefix: v
-
 test:
   environment:
     contents:
       packages:
         - python-3
   pipeline:
-    - runs: |
-        python -c "import jupyter_client; print(jupyter_client.__version__)"
+    - runs: 'python -c "import jupyter_client; print(jupyter_client.__version__)"
+
+      '
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: jupyter/jupyter_client
+    strip-prefix: v
+  manual: false

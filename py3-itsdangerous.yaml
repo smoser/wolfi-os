@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/itsdangerous/
-package:
-  name: py3-itsdangerous
-  version: 2.2.0
-  epoch: 2
-  description: Safely pass data to untrusted environments and back.
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -18,6 +6,17 @@ environment:
       - ca-certificates-bundle
       - python3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python3
+  description: Safely pass data to untrusted environments and back.
+  epoch: 2
+  name: py3-itsdangerous
+  version: 2.2.0
 
 pipeline:
   - uses: fetch
@@ -32,8 +31,10 @@ pipeline:
 
 test:
   pipeline:
-    - runs: |
-        python -c "from itsdangerous import URLSafeSerializer"
+    - runs: 'python -c "from itsdangerous import URLSafeSerializer"
+
+      '
+    - uses: py/pip-check
 
 update:
   enabled: true

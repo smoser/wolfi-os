@@ -1,11 +1,3 @@
-package:
-  name: py3-argcomplete
-  version: 3.5.0
-  epoch: 0
-  description: Bash/zsh tab completion for argparse
-  copyright:
-    - license: Apache-2.0
-
 environment:
   contents:
     packages:
@@ -13,6 +5,14 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  description: Bash/zsh tab completion for argparse
+  epoch: 0
+  name: py3-argcomplete
+  version: 3.5.0
 
 pipeline:
   - uses: git-checkout
@@ -26,12 +26,6 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  github:
-    identifier: kislyuk/argcomplete
-    strip-prefix: v
-
 test:
   environment:
     contents:
@@ -41,5 +35,13 @@ test:
     - uses: python/import
       with:
         import: argcomplete
-    - runs: |
-        register-python-argcomplete --help
+    - runs: 'register-python-argcomplete --help
+
+      '
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: kislyuk/argcomplete
+    strip-prefix: v

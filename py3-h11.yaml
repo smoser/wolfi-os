@@ -1,23 +1,9 @@
-# Generated from https://pypi.org/project/h11/
-package:
-  name: py3-h11
-  version: 0.14.0
-  epoch: 4
-  description: A pure-Python, bring-your-own-I/O implementation of HTTP/1.1
-  copyright:
-    - license: MIT
-  dependencies:
-    provider-priority: 0
-
-vars:
-  pypi-package: h11
-
 data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -30,40 +16,55 @@ environment:
       - py3-supported-wheel
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    provider-priority: 0
+  description: A pure-Python, bring-your-own-I/O implementation of HTTP/1.1
+  epoch: 4
+  name: py3-h11
+  version: 0.14.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 467c5cfc5f9a1364c7da6b754d591092ee409931
       repository: https://github.com/python-hyper/h11
       tag: v${{package.version}}
-      expected-commit: 467c5cfc5f9a1364c7da6b754d591092ee409931
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
-      runtime:
-        - py${{range.key}}-typing-extensions
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+      runtime:
+        - py${{range.key}}-typing-extensions
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
-      - runs: |
-          find ${{targets.destdir}} -name "*.pyc" -exec rm -rf '{}' +
+      - runs: 'find ${{targets.destdir}} -name "*.pyc" -exec rm -rf ''{}'' +
+
+        '
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             import: ${{vars.pypi-package}}
+            python: python${{range.key}}
+        - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: python-hyper/h11
-    use-tag: true
     strip-prefix: v
+    use-tag: true
+
+vars:
+  pypi-package: h11

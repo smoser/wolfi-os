@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/cryptography/
-package:
-  name: py3-cryptography
-  version: 43.0.0
-  epoch: 0
-  description: cryptography is a package which provides cryptographic recipes and primitives to Python developers.
-  copyright:
-    - license: Apache-2.0 OR BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-cffi
-      - python3
-
 environment:
   contents:
     packages:
@@ -26,35 +13,37 @@ environment:
       - rust
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0 OR BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-cffi
+      - python3
+  description: cryptography is a package which provides cryptographic recipes and primitives to Python developers.
+  epoch: 0
+  name: py3-cryptography
+  version: 43.0.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: ebf14f2edc8536f36797979cb0e075e766d978c5
       repository: https://github.com/pyca/cryptography/
       tag: ${{package.version}}
-      expected-commit: ebf14f2edc8536f36797979cb0e075e766d978c5
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: "LIBRARY=\"cryptography\"\nIMPORT_STATEMENT=\"import cryptography\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
     identifier: pyca/cryptography
     use-tag: true
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="cryptography"
-        IMPORT_STATEMENT="import cryptography"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

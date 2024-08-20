@@ -1,28 +1,9 @@
-package:
-  name: py3-ply
-  version: 3.11_git20180215
-  epoch: 3
-  description: Python Lex & Yacc
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    provider-priority: 0
-
-vars:
-  pypi-package: ply
-
-var-transforms:
-  - from: ${{package.version}}
-    match: _git(.*)
-    replace: ""
-    to: mangled-package-version
-
 data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -35,33 +16,53 @@ environment:
       - py3-supported-setuptools
       - py3-supported-wheel
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    provider-priority: 0
+  description: Python Lex & Yacc
+  epoch: 3
+  name: py3-ply
+  version: 3.11_git20180215
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 0f398b72618c1564d71f7dc0558e6722b241875a
       repository: https://github.com/dabeaz/ply
       tag: ${{vars.mangled-package-version}}
-      expected-commit: 0f398b72618c1564d71f7dc0558e6722b241875a
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             import: ${{vars.pypi-package}}
+            python: python${{range.key}}
+        - uses: py/pip-check
 
 update:
   enabled: false
   exclude-reason: some sort of a deprecated project
+
+var-transforms:
+  - from: ${{package.version}}
+    match: _git(.*)
+    replace: ''
+    to: mangled-package-version
+
+vars:
+  pypi-package: ply

@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/jedi/
-package:
-  name: py3-jedi
-  version: 0.19.1
-  epoch: 1
-  description: An autocompletion tool for Python that can be used for text editors.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-parso
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-parso
+      - python-3
+  description: An autocompletion tool for Python that can be used for text editors.
+  epoch: 1
+  name: py3-jedi
+  version: 0.19.1
 
 pipeline:
   - uses: git-checkout
@@ -35,12 +34,20 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
-  ignore-regex-patterns:
-    - show
   github:
     identifier: davidhalter/jedi
     strip-prefix: v
     use-tag: true
+  ignore-regex-patterns:
+    - show
+  manual: false

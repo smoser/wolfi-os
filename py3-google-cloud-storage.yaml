@@ -1,20 +1,3 @@
-# Generated from https://pypi.org/project/google-cloud-storage/
-package:
-  name: py3-google-cloud-storage
-  version: 2.18.2
-  epoch: 0
-  description: Google Cloud Storage API client library
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-google-auth
-      - py3-google-api-core
-      - py3-google-cloud-core
-      - py3-google-resumable-media
-      - py3-requests
-      - python-3
-
 environment:
   contents:
     packages:
@@ -24,6 +7,22 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-google-api-core
+      - py3-google-auth
+      - py3-google-cloud-core
+      - py3-google-resumable-media
+      - py3-requests
+      - python-3
+  description: Google Cloud Storage API client library
+  epoch: 0
+  name: py3-google-cloud-storage
+  version: 2.18.2
 
 pipeline:
   - uses: git-checkout
@@ -37,11 +36,19 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
-  ignore-regex-patterns:
-    - please--branches--main
   github:
     identifier: googleapis/python-storage
     strip-prefix: v
+  ignore-regex-patterns:
+    - please--branches--main
+  manual: false

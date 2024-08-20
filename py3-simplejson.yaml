@@ -1,11 +1,3 @@
-package:
-  name: py3-simplejson
-  version: 3.19.3
-  epoch: 0
-  description: Simple, fast, extensible JSON encoder/decoder for Python
-  copyright:
-    - license: MIT
-
 environment:
   contents:
     packages:
@@ -15,12 +7,20 @@ environment:
       - python3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  description: Simple, fast, extensible JSON encoder/decoder for Python
+  epoch: 0
+  name: py3-simplejson
+  version: 3.19.3
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 6932004966ab70ef47250a2b3152acd8c904e6b5
       repository: https://github.com/simplejson/simplejson
       tag: v${{package.version}}
-      expected-commit: 6932004966ab70ef47250a2b3152acd8c904e6b5
 
   - name: Python Build
     uses: python/build-wheel
@@ -31,8 +31,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import simplejson
+        imports: 'import simplejson
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/uritools/
-package:
-  name: py3-uritools
-  version: 4.0.3
-  epoch: 0
-  description: URI parsing, classification and composition
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,21 +8,40 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: URI parsing, classification and composition
+  epoch: 0
+  name: py3-uritools
+  version: 4.0.3
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 1ef40ab3e484aacc194ed3d1bc0c3bf3d45ef7ba
       repository: https://github.com/tkem/uritools
       tag: v${{package.version}}
-      expected-commit: 1ef40ab3e484aacc194ed3d1bc0c3bf3d45ef7ba
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
-    use-tag: true
     identifier: tkem/uritools
     strip-prefix: v
+    use-tag: true

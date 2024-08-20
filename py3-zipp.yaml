@@ -1,23 +1,9 @@
-# Generated from https://pypi.org/project/zipp/
-package:
-  name: py3-zipp
-  version: 3.20.0
-  epoch: 0
-  description: Backport of pathlib-compatible object wrapper for zip files
-  copyright:
-    - license: MIT
-  dependencies:
-    provider-priority: 0
-
-vars:
-  pypi-package: zipp
-
 data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -30,40 +16,59 @@ environment:
       - py3-supported-setuptools-scm
       - py3-supported-wheel
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    provider-priority: 0
+  description: Backport of pathlib-compatible object wrapper for zip files
+  epoch: 0
+  name: py3-zipp
+  version: 3.20.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: c5a33b2fae38dab057445011fdf33d26d0ba7cdf
       repository: https://github.com/jaraco/zipp
       tag: v${{package.version}}
-      expected-commit: c5a33b2fae38dab057445011fdf33d26d0ba7cdf
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            imports: |
-              import zipp
-        - runs: |
-            python${{range.key}} <<"ENDVERCHECK"
+            imports: 'import zipp
+
+            '
+        - runs: 'python${{range.key}} <<"ENDVERCHECK"
+
             from importlib.metadata import version
-            assert version('zipp') == "${{package.version}}"
+
+            assert version(''zipp'') == "${{package.version}}"
+
             ENDVERCHECK
+
+          '
+        - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: jaraco/zipp
     strip-prefix: v
+
+vars:
+  pypi-package: zipp

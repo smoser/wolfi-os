@@ -1,22 +1,9 @@
-package:
-  name: py3-tqdm
-  version: 4.66.5
-  epoch: 0
-  description: Fast, Extensible Progress Meter
-  copyright:
-    - license: MPL-2.0 AND MIT
-  dependencies:
-    provider-priority: 0
-
-vars:
-  pypi-package: tqdm
-
 data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -28,36 +15,49 @@ environment:
       - py3-supported-python
       - py3-supported-wheel
 
+package:
+  copyright:
+    - license: MPL-2.0 AND MIT
+  dependencies:
+    provider-priority: 0
+  description: Fast, Extensible Progress Meter
+  epoch: 0
+  name: py3-tqdm
+  version: 4.66.5
+
 pipeline:
   - uses: fetch
     with:
-      # README: 'CONFIRM WITH: curl -L https://files.pythonhosted.org/packages/source/t/tqdm/tqdm-4.66.1.tar.gz | sha256sum'
       expected-sha256: e1020aef2e5096702d8a025ac7d16b1577279c9d63f8375b63083e9a5f0fcbad
       uri: https://files.pythonhosted.org/packages/source/t/tqdm/tqdm-${{package.version}}.tar.gz
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
-      runtime:
-        - py${{range.key}}-colorama
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+      runtime:
+        - py${{range.key}}-colorama
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             import: ${{vars.pypi-package}}
+            python: python${{range.key}}
+        - uses: py/pip-check
 
 update:
   enabled: true
   release-monitor:
     identifier: 36051
+
+vars:
+  pypi-package: tqdm

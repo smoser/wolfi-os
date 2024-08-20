@@ -1,16 +1,3 @@
-package:
-  name: py3-referencing
-  version: 0.35.1
-  epoch: 1
-  description: "Cross-specification JSON referencing (JSON Schema, OpenAPI, and the one you just made up!)."
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-attrs
-      - py3-rpds-py
-      - python3
-
 environment:
   contents:
     packages:
@@ -23,30 +10,41 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-attrs
+      - py3-rpds-py
+      - python3
+  description: Cross-specification JSON referencing (JSON Schema, OpenAPI, and the one you just made up!).
+  epoch: 1
+  name: py3-referencing
+  version: 0.35.1
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 1863d4a5c18af1edd0f3b49caeb9fedfdaff9845
       repository: https://github.com/python-jsonschema/referencing
       tag: v${{package.version}}
-      expected-commit: 1863d4a5c18af1edd0f3b49caeb9fedfdaff9845
 
-  - runs: |
-      # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
-      export SOURCE_DATE_EPOCH=315532800
-      python3 -m pip install -U hatchling hatch-vcs
-      git submodule update --init
-      python3 -m gpep517 build-wheel \
-        --wheel-dir dist \
-        --output-fd 3 3>&1 >&2
-      python3 -m installer \
-        -d "${{targets.destdir}}" \
-        dist/referencing-${{package.version}}-*.whl
+  - runs: "# This is needed to work around the error \"ValueError: ZIP does not support timestamps before 1980\"\nexport SOURCE_DATE_EPOCH=315532800\npython3 -m pip install -U hatchling hatch-vcs\ngit submodule update --init\npython3 -m gpep517 build-wheel \\\n  --wheel-dir dist \\\n  --output-fd 3 3>&1 >&2\npython3 -m installer \\\n  -d \"${{targets.destdir}}\" \\\n  dist/referencing-${{package.version}}-*.whl\n"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: python-jsonschema/referencing
-    tag-filter: v
     strip-prefix: v
+    tag-filter: v

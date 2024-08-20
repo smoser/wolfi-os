@@ -1,14 +1,3 @@
-package:
-  name: py3-boltons
-  version: 24.0.0
-  epoch: 0
-  description: When they're not builtins, they're boltons.
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -20,41 +9,34 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python3
+  description: When they're not builtins, they're boltons.
+  epoch: 0
+  name: py3-boltons
+  version: 24.0.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 992a58c1036fcf4d52cbf3313b6217b7c07b11d9
       repository: https://github.com/mahmoud/boltons
       tag: ${{package.version}}
-      expected-commit: 992a58c1036fcf4d52cbf3313b6217b7c07b11d9
 
-  - runs: |
-      python3 -m gpep517 build-wheel \
-        --wheel-dir dist \
-        --output-fd 3 3>&1 >&2
-      python3 -m installer \
-        -d "${{targets.destdir}}" \
-        dist/boltons-${{package.version}}-*.whl
-      install -Dm644 LICENSE \
-        "${{targets.destdir}}"/usr/share/licenses/${{package.name}}/LICENSE
+  - runs: "python3 -m gpep517 build-wheel \\\n  --wheel-dir dist \\\n  --output-fd 3 3>&1 >&2\npython3 -m installer \\\n  -d \"${{targets.destdir}}\" \\\n  dist/boltons-${{package.version}}-*.whl\ninstall -Dm644 LICENSE \\\n  \"${{targets.destdir}}\"/usr/share/licenses/${{package.name}}/LICENSE\n"
 
   - uses: strip
+
+test:
+  pipeline:
+    - runs: "LIBRARY=\"boltons\"\nIMPORT_STATEMENT=\"import boltons\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: mahmoud/boltons
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="boltons"
-        IMPORT_STATEMENT="import boltons"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

@@ -1,15 +1,3 @@
-package:
-  name: py3-rfc3339
-  version: 1.1
-  epoch: 2
-  description: Generate and parse RFC 3339 timestamps
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-tz
-      - python3
-
 environment:
   contents:
     packages:
@@ -20,11 +8,23 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-tz
+      - python3
+  description: Generate and parse RFC 3339 timestamps
+  epoch: 2
+  name: py3-rfc3339
+  version: 1.1
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/kurtraschke/pyRFC3339
       expected-commit: e30cc1555adce0ecc7bd65509a2249d47e5a41b4
+      repository: https://github.com/kurtraschke/pyRFC3339
       tag: v${{package.version}}
 
   - name: Python Build
@@ -34,6 +34,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

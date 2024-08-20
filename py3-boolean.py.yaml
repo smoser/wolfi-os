@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/boolean.py/
-package:
-  name: py3-boolean.py
-  version: "4.0"
-  epoch: 1
-  description: Define boolean algebras, create and parse boolean expressions and create custom boolean DSL.
-  copyright:
-    - license: BSD-2-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,26 +8,28 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-2-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Define boolean algebras, create and parse boolean expressions and create custom boolean DSL.
+  epoch: 1
+  name: py3-boolean.py
+  version: '4.0'
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 93589c505c256eead9757402e908fcfdc1bb5ec5
       repository: https://github.com/bastikr/boolean.py
       tag: v${{package.version}}
-      expected-commit: 93589c505c256eead9757402e908fcfdc1bb5ec5
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
-
-update:
-  ignore-regex-patterns:
-    - '.*dev.*'
-  enabled: true
-  github:
-    identifier: bastikr/boolean.py
-    strip-prefix: v
-    use-tag: true
 
 test:
   environment:
@@ -47,5 +37,16 @@ test:
       packages:
         - python-3
   pipeline:
-    - runs: |
-        python -c "import boolean; algebra = boolean.BooleanAlgebra(); print(algebra.parse('a and b'))"
+    - runs: 'python -c "import boolean; algebra = boolean.BooleanAlgebra(); print(algebra.parse(''a and b''))"
+
+      '
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: bastikr/boolean.py
+    strip-prefix: v
+    use-tag: true
+  ignore-regex-patterns:
+    - .*dev.*

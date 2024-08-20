@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/pandocfilters/
-package:
-  name: py3-pandocfilters
-  version: 1.5.1
-  epoch: 0
-  description: Utilities for writing pandoc filters in python
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Utilities for writing pandoc filters in python
+  epoch: 0
+  name: py3-pandocfilters
+  version: 1.5.1
 
 pipeline:
   - uses: git-checkout
@@ -32,8 +31,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jgm/pandocfilters
+  manual: false

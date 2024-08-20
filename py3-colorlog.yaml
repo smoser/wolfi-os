@@ -1,15 +1,3 @@
-package:
-  name: py3-colorlog
-  version: 6.8.2
-  epoch: 0
-  description: Add colours to the output of Python's logging module.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-colorama
-      - python3
-
 environment:
   contents:
     packages:
@@ -20,11 +8,23 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-colorama
+      - python3
+  description: Add colours to the output of Python's logging module.
+  epoch: 0
+  name: py3-colorlog
+  version: 6.8.2
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/borntyping/python-colorlog
       expected-commit: 3d95fe86a5145081eb20c5c7acf529d3bbc10857
+      repository: https://github.com/borntyping/python-colorlog
       tag: v${{package.version}}
 
   - name: Python Build
@@ -35,23 +35,13 @@ pipeline:
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: "LIBRARY=\"colorlog\"\nIMPORT_STATEMENT=\"import colorlog\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
     identifier: borntyping/python-colorlog
     strip-prefix: v
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="colorlog"
-        IMPORT_STATEMENT="import colorlog"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

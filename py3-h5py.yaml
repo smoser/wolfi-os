@@ -1,12 +1,3 @@
-package:
-  name: py3-h5py
-  description: 'Read and write HDF5 files from Python'
-  url: 'https://www.h5py.org'
-  version: 3.11.0
-  epoch: 0
-  copyright:
-    - license: BSD-3-Clause
-
 environment:
   contents:
     packages:
@@ -23,31 +14,45 @@ environment:
       - python3-dev
       - wolfi-baselayout
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  description: Read and write HDF5 files from Python
+  epoch: 0
+  name: py3-h5py
+  url: https://www.h5py.org
+  version: 3.11.0
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/h5py/h5py
       expected-commit: 2c80981022e741a04e02d4afd6ae78bac1bc770f
+      repository: https://github.com/h5py/h5py
       tag: ${{package.version}}
 
-  - runs: |
-      sed -i "s/settings\\['runtime_library_dirs'\\] = settings\\['library_dirs'\\]/pass/" setup_build.py
+  - runs: 'sed -i "s/settings\\[''runtime_library_dirs''\\] = settings\\[''library_dirs''\\]/pass/" setup_build.py
 
-  - runs: |
-      export H5PY_SYSTEM_LZF=1
-      # Stop requiring a specific version of numpy
-      export H5PY_SETUP_REQUIRES=0
-      python3 -m gpep517 build-wheel \
-        --wheel-dir .dist \
-        --output-fd 3 3>&1 >&2
+    '
 
-  - runs: |
-      python3 -m installer -d "${{targets.destdir}}" .dist/*.whl
+  - runs: "export H5PY_SYSTEM_LZF=1\n# Stop requiring a specific version of numpy\nexport H5PY_SETUP_REQUIRES=0\npython3 -m gpep517 build-wheel \\\n  --wheel-dir .dist \\\n  --output-fd 3 3>&1 >&2\n"
 
-  - runs: |
-      rm -r "${{targets.destdir}}"/usr/lib/python3*/site-packages/h5py/tests
+  - runs: 'python3 -m installer -d "${{targets.destdir}}" .dist/*.whl
+
+    '
+
+  - runs: 'rm -r "${{targets.destdir}}"/usr/lib/python3*/site-packages/h5py/tests
+
+    '
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

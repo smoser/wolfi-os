@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/attrs/
-package:
-  name: py3-attrs
-  version: 24.2.0
-  epoch: 0
-  description: Classes Without Boilerplate
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-importlib-metadata
-      - python3
-
 environment:
   contents:
     packages:
@@ -25,35 +12,47 @@ environment:
       - python3
       - wolfi-base
   environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
-    # The script
     SOURCE_DATE_EPOCH: 315532800
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-importlib-metadata
+      - python3
+  description: Classes Without Boilerplate
+  epoch: 0
+  name: py3-attrs
+  version: 24.2.0
 
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 6771a04893780166e4b7826b63599f43ac30d00a
       repository: https://github.com/python-attrs/attrs.git
       tag: ${{package.version}}
-      expected-commit: 6771a04893780166e4b7826b63599f43ac30d00a
 
   - name: Fetch History (required by pip install)
-    runs: |
-      git fetch --unshallow
+    runs: 'git fetch --unshallow
+
+    '
 
   - name: Python Install
     runs: export SOURCE_DATE_EPOCH=$(git log -1 --format=%ct || $SOURCE_DATE_EPOCH) && pip3 install . --root=${{targets.destdir}}
 
   - uses: strip
 
-update:
-  enabled: true
-  ignore-regex-patterns:
-    - "^.*?post\\d"
-  github:
-    identifier: python-attrs/attrs
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: attrs
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: python-attrs/attrs
+  ignore-regex-patterns:
+    - ^.*?post\d

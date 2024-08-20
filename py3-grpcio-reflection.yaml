@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/grpcio-reflection/
-package:
-  name: py3-grpcio-reflection
-  version: 1.65.4
-  epoch: 0
-  description: Standard Protobuf Reflection Service for gRPC
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-protobuf
-      - py3-grpcio
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-grpcio
+      - py3-protobuf
+  description: Standard Protobuf Reflection Service for gRPC
+  epoch: 0
+  name: py3-grpcio-reflection
+  version: 1.65.4
 
 pipeline:
   - uses: fetch
@@ -34,6 +33,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

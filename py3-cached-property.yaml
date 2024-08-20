@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/cached-property/
-package:
-  name: py3-cached-property
-  version: 1.5.2
-  epoch: 2
-  description: A decorator for caching properties in classes.
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: A decorator for caching properties in classes.
+  epoch: 2
+  name: py3-cached-property
+  version: 1.5.2
 
 pipeline:
   - uses: git-checkout
@@ -32,8 +31,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: pydanny/cached-property
+  manual: false

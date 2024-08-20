@@ -1,13 +1,9 @@
-# Generated from https://pypi.org/project/filelock/
-package:
-  name: py3-filelock
-  version: 3.15.4
-  epoch: 1
-  description: A platform independent file lock.
-  copyright:
-    - license: Unlicense
-  dependencies:
-    provider-priority: 0
+data:
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -21,47 +17,51 @@ environment:
       - py3-supported-setuptools
       - py3-supported-wheel
 
-vars:
-  pypi-package: filelock
-
-data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+package:
+  copyright:
+    - license: Unlicense
+  dependencies:
+    provider-priority: 0
+  description: A platform independent file lock.
+  epoch: 1
+  name: py3-filelock
+  version: 3.15.4
 
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 9a979dfe68fab75517c0612952ea401a232055a0
       repository: https://github.com/benediktschmitt/py-filelock
       tag: ${{package.version}}
-      expected-commit: 9a979dfe68fab75517c0612952ea401a232055a0
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
-      runtime:
-        - py${{range.key}}-typing-extensions
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+      runtime:
+        - py${{range.key}}-typing-extensions
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             import: ${{vars.pypi-package}}
+            python: python${{range.key}}
+        - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: benediktschmitt/py-filelock
     use-tag: true
+
+vars:
+  pypi-package: filelock

@@ -1,11 +1,3 @@
-package:
-  name: py3-jwcrypto
-  version: 1.5.6
-  epoch: 1
-  description: Implementation of JOSE Web standards
-  copyright:
-    - license: LGPL-3.0-or-later
-
 environment:
   contents:
     packages:
@@ -14,12 +6,20 @@ environment:
       - ca-certificates-bundle
       - wolfi-base
 
+package:
+  copyright:
+    - license: LGPL-3.0-or-later
+  description: Implementation of JOSE Web standards
+  epoch: 1
+  name: py3-jwcrypto
+  version: 1.5.6
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: ecde4efdc7c9364b53bd1b4232e97557d821abdf
       repository: https://github.com/latchset/jwcrypto
       tag: v${{package.version}}
-      expected-commit: ecde4efdc7c9364b53bd1b4232e97557d821abdf
 
   - name: Python Build
     uses: python/build-wheel
@@ -30,8 +30,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import jwcrypto
+        imports: 'import jwcrypto
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true

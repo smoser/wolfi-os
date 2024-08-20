@@ -1,18 +1,3 @@
-package:
-  name: py3-jsonschema
-  version: 4.23.0
-  epoch: 0
-  description: "Python Classes Without Boilerplate."
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-attrs
-      - py3-jsonschema-specifications
-      - py3-referencing
-      - py3-rpds-py
-      - python3
-
 environment:
   contents:
     packages:
@@ -25,35 +10,42 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-attrs
+      - py3-jsonschema-specifications
+      - py3-referencing
+      - py3-rpds-py
+      - python3
+  description: Python Classes Without Boilerplate.
+  epoch: 0
+  name: py3-jsonschema
+  version: 4.23.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: cfe8a4071672b9652c8f083faed1c4ffa7d67705
       repository: https://github.com/python-jsonschema/jsonschema
       tag: v${{package.version}}
-      expected-commit: cfe8a4071672b9652c8f083faed1c4ffa7d67705
 
-  - runs: |
-      # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
-      export SOURCE_DATE_EPOCH=315532800
-      python3 -m pip install -U hatchling hatch-vcs hatch-fancy-pypi-readme
-      python3 -m gpep517 build-wheel \
-        --wheel-dir dist \
-        --output-fd 3 3>&1 >&2
-      python3 -m installer \
-        -d "${{targets.destdir}}" \
-        dist/jsonschema-${{package.version}}-py3-none-any.whl
+  - runs: "# This is needed to work around the error \"ValueError: ZIP does not support timestamps before 1980\"\nexport SOURCE_DATE_EPOCH=315532800\npython3 -m pip install -U hatchling hatch-vcs hatch-fancy-pypi-readme\npython3 -m gpep517 build-wheel \\\n  --wheel-dir dist \\\n  --output-fd 3 3>&1 >&2\npython3 -m installer \\\n  -d \"${{targets.destdir}}\" \\\n  dist/jsonschema-${{package.version}}-py3-none-any.whl\n"
 
   - uses: strip
-
-update:
-  enabled: true
-  github:
-    identifier: python-jsonschema/jsonschema
-    tag-filter: v
-    strip-prefix: v
 
 test:
   pipeline:
     - uses: python/import
       with:
         import: jsonschema
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: python-jsonschema/jsonschema
+    strip-prefix: v
+    tag-filter: v

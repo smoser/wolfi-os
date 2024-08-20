@@ -1,22 +1,9 @@
-package:
-  name: py3-flit-core
-  version: 3.9.0
-  epoch: 2
-  description: "simple packaging tool for simple packages (core)"
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    provider-priority: 0
-
-vars:
-  pypi-package: flit-core
-
 data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -25,49 +12,57 @@ environment:
       - busybox
       - py3-supported-python
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    provider-priority: 0
+  description: simple packaging tool for simple packages (core)
+  epoch: 2
+  name: py3-flit-core
+  version: 3.9.0
+
 pipeline:
   - uses: fetch
     with:
-      uri: https://files.pythonhosted.org/packages/source/f/flit/flit-${{package.version}}.tar.gz
       expected-sha256: d75edf5eb324da20d53570a6a6f87f51e606eee8384925cd66a90611140844c7
+      uri: https://files.pythonhosted.org/packages/source/f/flit/flit-${{package.version}}.tar.gz
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
+  - dependencies:
       provider-priority: ${{range.value}}
       provides:
         - ${{package.name}}
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
-      - runs: |
-          cd flit_core
-          rm -Rf dist/
-          python${{range.key}} -m flit_core.wheel
-          python${{range.key}} bootstrap_install.py \
-              --install-root=${{targets.subpkgdir}} \
-              dist/flit_core-${{package.version}}-py3-none-any.whl
-          mkdir -p /home/build/.wheels/${{range.key}}/
-          cp dist/flit_core-${{package.version}}-py3-none-any.whl \
-              /home/build/.wheels/${{range.key}}/
-          python${{range.key}} -m compileall --invalidation-mode=unchecked-hash -r100 \
-              ${{targets.subpkgdir}}
-          rm -rf "${{targets.subpkgdir}}"/usr/lib/python3*/site-packages/flit_core/tests
+      - runs: "cd flit_core\nrm -Rf dist/\npython${{range.key}} -m flit_core.wheel\npython${{range.key}} bootstrap_install.py \\\n    --install-root=${{targets.subpkgdir}} \\\n    dist/flit_core-${{package.version}}-py3-none-any.whl\nmkdir -p /home/build/.wheels/${{range.key}}/\ncp dist/flit_core-${{package.version}}-py3-none-any.whl \\\n    /home/build/.wheels/${{range.key}}/\npython${{range.key}} -m compileall --invalidation-mode=unchecked-hash -r100 \\\n    ${{targets.subpkgdir}}\nrm -rf \"${{targets.subpkgdir}}\"/usr/lib/python3*/site-packages/flit_core/tests\n"
       - uses: strip
+    range: py-versions
+    test:
+      environment:
+        contents:
+          packages:
+            - busybox
+      pipeline:
+        - uses: py/pip-check
 
   - name: py3-wheels-${{vars.pypi-package}}
     pipeline:
       - uses: py/collect-wheels
 
-  - name: py3-supported-${{vars.pypi-package}}
-    description: meta package providing ${{vars.pypi-package}} for supported python versions.
-    dependencies:
+  - dependencies:
       runtime:
         - py3.10-${{vars.pypi-package}}
         - py3.11-${{vars.pypi-package}}
         - py3.12-${{vars.pypi-package}}
+    description: meta package providing ${{vars.pypi-package}} for supported python versions.
+    name: py3-supported-${{vars.pypi-package}}
 
 update:
   enabled: true
   release-monitor:
     identifier: 44841
+
+vars:
+  pypi-package: flit-core

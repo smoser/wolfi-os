@@ -1,23 +1,9 @@
-package:
-  name: py3-importlib-resources
-  version: 6.4.3
-  epoch: 0
-  description: Read resources from Python packages
-  copyright:
-    - license: MIT
-  dependencies:
-    provider-priority: 0
-
-vars:
-  pypi-package: importlib-resources
-  module-name: importlib_resources
-
 data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -28,34 +14,45 @@ environment:
       - py3-supported-python
       - py3-supported-wheel
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    provider-priority: 0
+  description: Read resources from Python packages
+  epoch: 0
+  name: py3-importlib-resources
+  version: 6.4.3
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: d02141768b62468e46064614276036ea5c746056
       repository: https://github.com/python/importlib_resources
       tag: v${{package.version}}
-      expected-commit: d02141768b62468e46064614276036ea5c746056
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
-      runtime:
-        - py${{range.key}}-zipp
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+      runtime:
+        - py${{range.key}}-zipp
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             import: ${{vars.module-name}}
+            python: python${{range.key}}
+        - uses: py/pip-check
 
 update:
   enabled: true
@@ -63,3 +60,7 @@ update:
     identifier: python/importlib_resources
     strip-prefix: v
     use-tag: true
+
+vars:
+  module-name: importlib_resources
+  pypi-package: importlib-resources

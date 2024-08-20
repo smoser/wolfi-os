@@ -1,18 +1,3 @@
-# Generated from https://pypi.org/project/jupyterhub-nativeauthenticator/
-package:
-  name: py3-jupyterhub-nativeauthenticator
-  version: 1.2.0
-  epoch: 0
-  description: JupyterHub Native Authenticator
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-jupyterhub
-      - py3-bcrypt
-      - py3-onetimepass
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,6 +7,20 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-bcrypt
+      - py3-jupyterhub
+      - py3-onetimepass
+      - python-3
+  description: JupyterHub Native Authenticator
+  epoch: 0
+  name: py3-jupyterhub-nativeauthenticator
+  version: 1.2.0
 
 pipeline:
   - uses: git-checkout
@@ -35,9 +34,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jupyterhub/nativeauthenticator
     use-tag: true
+  manual: false

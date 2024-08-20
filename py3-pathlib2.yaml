@@ -1,18 +1,3 @@
-# Generated from https://pypi.org/project/pathlib2/
-package:
-  name: py3-pathlib2
-  version: 2.3.7
-  epoch: 2
-  description: Object-oriented filesystem paths
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-six
-      - py3-scandir
-      - py3-typing
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,6 +7,20 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-scandir
+      - py3-six
+      - py3-typing
+      - python-3
+  description: Object-oriented filesystem paths
+  epoch: 2
+  name: py3-pathlib2
+  version: 2.3.7
 
 pipeline:
   - uses: git-checkout
@@ -34,6 +33,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,14 +1,3 @@
-package:
-  name: py3-awscrt
-  version: 0.21.2
-  epoch: 0
-  description: Python bindings for the AWS Common Runtime
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -25,36 +14,33 @@ environment:
       - samurai
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python3
+  description: Python bindings for the AWS Common Runtime
+  epoch: 0
+  name: py3-awscrt
+  version: 0.21.2
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 436d58ca1db672a0c8997d5a135ee18b266d1d5e
       repository: https://github.com/awslabs/aws-crt-python
       tag: v${{package.version}}
-      expected-commit: 436d58ca1db672a0c8997d5a135ee18b266d1d5e
 
-  - runs: |
-      git submodule update --init
+  - runs: "git submodule update --init\n\n# Allow linking to shared libraries\nsed -i '/:lib/d' setup.py\n\nexport AWS_CRT_BUILD_USE_SYSTEM_LIBCRYPTO=1\npython3 -m gpep517 build-wheel \\\n  --wheel-dir dist \\\n  --output-fd 3 3>&1 >&2\n"
 
-      # Allow linking to shared libraries
-      sed -i '/:lib/d' setup.py
+  - runs: 'python3 -m installer -d "${{targets.destdir}}" \
 
-      export AWS_CRT_BUILD_USE_SYSTEM_LIBCRYPTO=1
-      python3 -m gpep517 build-wheel \
-        --wheel-dir dist \
-        --output-fd 3 3>&1 >&2
-
-  - runs: |
-      python3 -m installer -d "${{targets.destdir}}" \
       dist/*.whl
 
-  - uses: strip
+    '
 
-update:
-  enabled: true
-  github:
-    identifier: awslabs/aws-crt-python
-    use-tag: true
-    strip-prefix: v
+  - uses: strip
 
 test:
   environment:
@@ -62,5 +48,14 @@ test:
       packages:
         - py3-pip
   pipeline:
-    - runs: |
-        python3 -m pip install --no-binary :all: --verbose awscrt
+    - runs: 'python3 -m pip install --no-binary :all: --verbose awscrt
+
+      '
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: awslabs/aws-crt-python
+    strip-prefix: v
+    use-tag: true

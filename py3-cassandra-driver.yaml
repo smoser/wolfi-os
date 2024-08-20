@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/cassandra-driver/
-package:
-  name: py3-cassandra-driver
-  version: 3.28.0
-  epoch: 1
-  description: DataStax Driver for Apache Cassandra
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-six
-      - py3-geomet
-
 environment:
   contents:
     packages:
@@ -18,6 +5,18 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-geomet
+      - py3-six
+  description: DataStax Driver for Apache Cassandra
+  epoch: 1
+  name: py3-cassandra-driver
+  version: 3.28.0
 
 pipeline:
   - uses: git-checkout
@@ -35,8 +34,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import cassandra
+        imports: 'import cassandra
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/grpcio-gcp/
-package:
-  name: py3-grpcio-gcp
-  version: 0.2.2
-  epoch: 2
-  description: gRPC extensions for Google Cloud Platform
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-grpcio
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-grpcio
+      - python-3
+  description: gRPC extensions for Google Cloud Platform
+  epoch: 2
+  name: py3-grpcio-gcp
+  version: 0.2.2
 
 pipeline:
   - uses: fetch
@@ -31,6 +30,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

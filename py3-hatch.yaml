@@ -1,11 +1,20 @@
-# Generated from https://pypi.org/project/hatch/
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - py3-build
+      - py3-installer
+      - py3-setuptools
+      - python3
+      - wolfi-base
+  environment:
+    SOURCE_DATE_EPOCH: 315532800
+
 package:
-  name: py3-hatch
-  version: 1.12.0
-  epoch: 0
-  description: Modern, extensible Python project management
   copyright:
-    - license: "MIT"
+    - license: MIT
   dependencies:
     runtime:
       - py3-click
@@ -24,21 +33,10 @@ package:
       - py3-userpath
       - py3-virtualenv
       - python3
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-build
-      - py3-installer
-      - py3-setuptools
-      - python3
-      - wolfi-base
-  environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
-    SOURCE_DATE_EPOCH: 315532800
+  description: Modern, extensible Python project management
+  epoch: 0
+  name: py3-hatch
+  version: 1.12.0
 
 pipeline:
   - uses: git-checkout
@@ -52,15 +50,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  pipeline:
+    - uses: python/import
+      with:
+        import: hatch
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
     identifier: pypa/hatch
     strip-prefix: hatch-v
     tag-filter: hatch-v
-
-test:
-  pipeline:
-    - uses: python/import
-      with:
-        import: hatch

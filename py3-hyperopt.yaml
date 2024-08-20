@@ -1,8 +1,14 @@
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - py3-setuptools
+      - python3
+      - wolfi-base
+
 package:
-  name: py3-hyperopt
-  version: 0.2.7
-  epoch: 2
-  description: Distributed Asynchronous Hyperparameter Optimization
   copyright:
     - license: BSD-3-Clause
   dependencies:
@@ -16,22 +22,16 @@ package:
       - py3-six
       - py3-tqdm
       - python3
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-setuptools
-      - python3
-      - wolfi-base
+  description: Distributed Asynchronous Hyperparameter Optimization
+  epoch: 2
+  name: py3-hyperopt
+  version: 0.2.7
 
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/hyperopt/hyperopt
       expected-commit: dfdb48d1dd9917fad347316a7818a9dcd160f200
+      repository: https://github.com/hyperopt/hyperopt
       tag: ${{package.version}}
 
   - name: Python Build
@@ -41,6 +41,14 @@ pipeline:
     uses: python/install
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

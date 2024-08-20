@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/text-unidecode/
-package:
-  name: py3-text-unidecode
-  version: "1.3"
-  epoch: 1
-  description: The most basic Text::Unidecode port
-  copyright:
-    - license: GPL-2.0-or-later
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -22,6 +10,17 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: GPL-2.0-or-later
+  dependencies:
+    runtime:
+      - python3
+  description: The most basic Text::Unidecode port
+  epoch: 1
+  name: py3-text-unidecode
+  version: '1.3'
+
 pipeline:
   - uses: git-checkout
     with:
@@ -33,6 +32,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

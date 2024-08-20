@@ -1,18 +1,3 @@
-# Generated from https://pypi.org/project/grpcio-opentracing/
-package:
-  name: py3-grpcio-opentracing
-  version: 1.1.4
-  epoch: 2
-  description: Python OpenTracing Extensions for gRPC
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-opentracing
-      - py3-grpcio
-      - py3-six
-      - py3-pip
-
 environment:
   contents:
     packages:
@@ -23,6 +8,20 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-grpcio
+      - py3-opentracing
+      - py3-pip
+      - py3-six
+  description: Python OpenTracing Extensions for gRPC
+  epoch: 2
+  name: py3-grpcio-opentracing
+  version: 1.1.4
 
 pipeline:
   - uses: fetch
@@ -37,6 +36,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,11 +1,3 @@
-package:
-  name: py3-pygments
-  version: 2.18.0
-  epoch: 0
-  description: Syntax highlighting package written in Python
-  copyright:
-    - license: BSD-2-Clause
-
 environment:
   contents:
     packages:
@@ -14,40 +6,43 @@ environment:
       - ca-certificates-bundle
       - py3-pip
   environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
     SOURCE_DATE_EPOCH: 315532800
+
+package:
+  copyright:
+    - license: BSD-2-Clause
+  description: Syntax highlighting package written in Python
+  epoch: 0
+  name: py3-pygments
+  version: 2.18.0
 
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: d7d11f6e6d3aa97805215c1cc833ea5f0ef1fcbb
       repository: https://github.com/pygments/pygments.git
       tag: ${{package.version}}
-      expected-commit: d7d11f6e6d3aa97805215c1cc833ea5f0ef1fcbb
 
   - runs: pip install . --prefix=/usr --root=${{targets.destdir}}
 
-  - runs: |
-      sed -i '1s|^#!/usr/bin/python$|#!/usr/bin/python3|' ${{targets.destdir}}/usr/bin/pygmentize
+  - runs: 'sed -i ''1s|^#!/usr/bin/python$|#!/usr/bin/python3|'' ${{targets.destdir}}/usr/bin/pygmentize
+
+    '
 
 subpackages:
-  - name: py3-pygments-doc
+  - description: py3-pygments manpages
+    name: py3-pygments-doc
     pipeline:
-      - runs: |
-          destdir=${{targets.subpkgdir}}/usr/share/doc/py3-pygments
-
-          cd "$builddir"
-
-          install -m 644 -D doc/pygmentize.1 \
-            ${{targets.subpkgdir}}/usr/share/man/man1/pygmentize.1
-
-          mkdir -p "$destdir"
-          cp AUTHORS CHANGES LICENSE "$destdir"/
-
-          # Note: The documentation in the doc directory needs to be generated
-          # by py-sphinx
-          cp -R ./doc/docs/* "$destdir"/
+      - runs: "destdir=${{targets.subpkgdir}}/usr/share/doc/py3-pygments\n\ncd \"$builddir\"\n\ninstall -m 644 -D doc/pygmentize.1 \\\n  ${{targets.subpkgdir}}/usr/share/man/man1/pygmentize.1\n\nmkdir -p \"$destdir\"\ncp AUTHORS CHANGES LICENSE \"$destdir\"/\n\n# Note: The documentation in the doc directory needs to be generated\n# by py-sphinx\ncp -R ./doc/docs/* \"$destdir\"/\n"
       - uses: split/manpages
-    description: py3-pygments manpages
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

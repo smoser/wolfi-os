@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/parso/
-package:
-  name: py3-parso
-  version: 0.8.4
-  epoch: 0
-  description: A Python Parser
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: A Python Parser
+  epoch: 0
+  name: py3-parso
+  version: 0.8.4
 
 pipeline:
   - uses: git-checkout
@@ -32,10 +31,18 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: davidhalter/parso
     strip-prefix: v
     use-tag: true
+  manual: false

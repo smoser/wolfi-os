@@ -1,15 +1,3 @@
-package:
-  name: py3-s3transfer
-  version: 0.10.2
-  epoch: 0
-  description: "Amazon S3 Transfer Manager for Python"
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-botocore
-      - python3
-
 environment:
   contents:
     packages:
@@ -20,29 +8,44 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-botocore
+      - python3
+  description: Amazon S3 Transfer Manager for Python
+  epoch: 0
+  name: py3-s3transfer
+  version: 0.10.2
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 9a168299c932077e665a618bfa5e2d5e39343745
       repository: https://github.com/boto/s3transfer
       tag: ${{package.version}}
-      expected-commit: 9a168299c932077e665a618bfa5e2d5e39343745
 
-  - runs: |
-      python3 setup.py build
+  - runs: 'python3 setup.py build
 
-  - runs: |
-      python3 setup.py install --prefix=/usr --root="${{targets.destdir}}" --skip-build
+    '
+
+  - runs: 'python3 setup.py install --prefix=/usr --root="${{targets.destdir}}" --skip-build
+
+    '
 
   - uses: strip
-
-update:
-  enabled: true
-  github:
-    identifier: boto/s3transfer
-    use-tag: true
 
 test:
   pipeline:
     - uses: python/import
       with:
         import: s3transfer
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: boto/s3transfer
+    use-tag: true

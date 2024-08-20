@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/objsize/
-package:
-  name: py3-objsize
-  version: 0.7.0
-  epoch: 1
-  description: Traversal over Python's objects subtree and calculate the total size of the subtree in bytes (deep size).
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Traversal over Python's objects subtree and calculate the total size of the subtree in bytes (deep size).
+  epoch: 1
+  name: py3-objsize
+  version: 0.7.0
 
 pipeline:
   - uses: git-checkout
@@ -32,8 +31,16 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: liran-funaro/objsize
+  manual: false

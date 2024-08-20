@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/requests-toolbelt/
-package:
-  name: py3-requests-toolbelt
-  version: 1.0.0
-  epoch: 2
-  description: A utility belt for advanced users of python-requests
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-requests
-      - python-3
-
 environment:
   contents:
     packages:
@@ -21,17 +8,37 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-requests
+      - python-3
+  description: A utility belt for advanced users of python-requests
+  epoch: 2
+  name: py3-requests-toolbelt
+  version: 1.0.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: b7d1a1fcdda9ebcd9afe5011690ab860fce780c2
       repository: https://github.com/requests/toolbelt
       tag: ${{package.version}}
-      expected-commit: b7d1a1fcdda9ebcd9afe5011690ab860fce780c2
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,15 +1,3 @@
-package:
-  name: py3-sphinxcontrib-applehelp
-  version: 2.0.0
-  epoch: 0
-  description: sphinxcontrib-applehelp is a Sphinx extension which outputs Apple help books
-  copyright:
-    - license: BSD-2-Clause
-  dependencies:
-    runtime:
-      - py3-sphinx
-      - python3
-
 environment:
   contents:
     packages:
@@ -23,21 +11,43 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-2-Clause
+  dependencies:
+    runtime:
+      - py3-sphinx
+      - python3
+  description: sphinxcontrib-applehelp is a Sphinx extension which outputs Apple help books
+  epoch: 0
+  name: py3-sphinxcontrib-applehelp
+  version: 2.0.0
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/sphinx-doc/sphinxcontrib-applehelp
       expected-commit: f4f9d900b238d03da601bf7c75cff5bcbcee6d7c
+      repository: https://github.com/sphinx-doc/sphinxcontrib-applehelp
       tag: ${{package.version}}
 
   - name: Python Build
-    runs: |
-      python3 -m build
+    runs: 'python3 -m build
 
-  - runs: |
-      python3 -m installer -d "${{targets.destdir}}" dist/sphinxcontrib_applehelp*.whl
+    '
+
+  - runs: 'python3 -m installer -d "${{targets.destdir}}" dist/sphinxcontrib_applehelp*.whl
+
+    '
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/pyzmq/
-package:
-  name: py3-pyzmq
-  version: 26.1.1
-  epoch: 0
-  description: Python bindings for 0MQ
-  copyright:
-    # Upstream completed relicensing: https://github.com/zeromq/pyzmq/tree/main/RELICENSE
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -26,6 +13,17 @@ environment:
       - zeromq
       - zeromq-dev
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - python-3
+  description: Python bindings for 0MQ
+  epoch: 0
+  name: py3-pyzmq
+  version: 26.1.1
+
 pipeline:
   - uses: git-checkout
     with:
@@ -38,9 +36,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: zeromq/pyzmq
     strip-prefix: v
+  manual: false

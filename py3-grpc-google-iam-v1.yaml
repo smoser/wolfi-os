@@ -1,18 +1,3 @@
-# Generated from https://pypi.org/project/grpc-google-iam-v1/
-package:
-  name: py3-grpc-google-iam-v1
-  version: 0.13.1
-  epoch: 0
-  description: IAM API client library
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - py3-grpcio
-      - py3-googleapis-common-protos
-      - py3-protobuf
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,6 +7,20 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - py3-googleapis-common-protos
+      - py3-grpcio
+      - py3-protobuf
+      - python-3
+  description: IAM API client library
+  epoch: 0
+  name: py3-grpc-google-iam-v1
+  version: 0.13.1
 
 pipeline:
   - uses: git-checkout
@@ -35,9 +34,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: googleapis/python-grpc-google-iam-v1
     strip-prefix: v
+  manual: false

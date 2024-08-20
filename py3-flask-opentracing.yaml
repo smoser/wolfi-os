@@ -1,12 +1,3 @@
-# Generated from https://pypi.org/project/Flask-OpenTracing/
-package:
-  name: py3-flask-opentracing
-  version: 2.0.0
-  epoch: 1
-  description: OpenTracing support for Flask applications
-  copyright:
-    - license: BSD-3-Clause
-
 environment:
   contents:
     packages:
@@ -16,6 +7,14 @@ environment:
       - py3-setuptools
       - python3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  description: OpenTracing support for Flask applications
+  epoch: 1
+  name: py3-flask-opentracing
+  version: 2.0.0
 
 pipeline:
   - uses: fetch
@@ -30,6 +29,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

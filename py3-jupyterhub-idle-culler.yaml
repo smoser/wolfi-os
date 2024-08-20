@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/jupyterhub-idle-culler/
-package:
-  name: py3-jupyterhub-idle-culler
-  version: 1.3.1
-  epoch: 0
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-tornado
-      - py3-python-dateutil
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-python-dateutil
+      - py3-tornado
+      - python-3
+  epoch: 0
+  name: py3-jupyterhub-idle-culler
+  version: 1.3.1
 
 pipeline:
   - uses: git-checkout
@@ -33,9 +32,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jupyterhub/jupyterhub-idle-culler
     use-tag: true
+  manual: false

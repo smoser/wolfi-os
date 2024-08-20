@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/rfc3339-validator/
-package:
-  name: py3-rfc3339-validator
-  version: 0.1.4
-  epoch: 3
-  description: A pure python RFC3339 validator
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-six
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-six
+      - python-3
+  description: A pure python RFC3339 validator
+  epoch: 3
+  name: py3-rfc3339-validator
+  version: 0.1.4
 
 pipeline:
   - uses: git-checkout
@@ -33,9 +32,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: naimetti/rfc3339-validator
     strip-prefix: v
+  manual: false

@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/jupyter-server-terminals/
-package:
-  name: py3-jupyter-server-terminals
-  version: 0.5.3
-  epoch: 0
-  description: A Jupyter Server Extension Providing Terminals.
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-terminado
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,6 +7,18 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-terminado
+      - python-3
+  description: A Jupyter Server Extension Providing Terminals.
+  epoch: 0
+  name: py3-jupyter-server-terminals
+  version: 0.5.3
 
 pipeline:
   - uses: fetch
@@ -31,6 +30,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/mdit-py-plugins/
-package:
-  name: py3-mdit-py-plugins
-  version: 0.4.1
-  epoch: 0
-  description: Collection of plugins for markdown-it-py
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-markdown-it-py
-      - python-3
-
 environment:
   contents:
     packages:
@@ -21,17 +8,37 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-markdown-it-py
+      - python-3
+  description: Collection of plugins for markdown-it-py
+  epoch: 0
+  name: py3-mdit-py-plugins
+  version: 0.4.1
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/executablebooks/mdit-py-plugins
       expected-commit: d11bdaf0979e6fae01c35db5a4d1f6a4b4dd8843
+      repository: https://github.com/executablebooks/mdit-py-plugins
       tag: v${{package.version}}
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

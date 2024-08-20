@@ -1,14 +1,3 @@
-package:
-  name: py3-sphinx
-  version: 8.0.2
-  epoch: 0
-  description: "Python Documentation Generator"
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -21,31 +10,47 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: Python Documentation Generator
+  epoch: 0
+  name: py3-sphinx
+  version: 8.0.2
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 043750e406d8fe03953f5b565b36e05aef6866ec
       repository: https://github.com/sphinx-doc/sphinx
       tag: v${{package.version}}
-      expected-commit: 043750e406d8fe03953f5b565b36e05aef6866ec
 
-  - runs: |
-      mkdir -p dist
+  - runs: 'mkdir -p dist
+
       backend="$(python3 -m gpep517 get-backend)"
+
       python3 -m gpep517 build-wheel --wheel-dir dist --backend "$backend" --output-fd 1
 
-  - runs: |
-      python3 -m installer -d "${{targets.destdir}}" dist/sphinx-*.whl
+    '
+
+  - runs: 'python3 -m installer -d "${{targets.destdir}}" dist/sphinx-*.whl
+
+    '
 
   - uses: strip
-
-update:
-  enabled: true
-  github:
-    identifier: sphinx-doc/sphinx
-    strip-prefix: v
 
 test:
   pipeline:
     - uses: python/import
       with:
         import: sphinx
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: sphinx-doc/sphinx
+    strip-prefix: v

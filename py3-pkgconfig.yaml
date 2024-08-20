@@ -1,14 +1,3 @@
-package:
-  name: py3-pkgconfig
-  version: 1.5.5
-  epoch: 3
-  description: Interface Python with pkg-config
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -18,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Interface Python with pkg-config
+  epoch: 3
+  name: py3-pkgconfig
+  version: 1.5.5
 
 pipeline:
   - uses: fetch
@@ -32,6 +32,14 @@ pipeline:
     uses: python/install
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

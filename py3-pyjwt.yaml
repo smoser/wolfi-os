@@ -1,15 +1,3 @@
-package:
-  name: py3-pyjwt
-  version: 2.9.0
-  epoch: 0
-  description: JSON Web Token implementation in Python
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-typing-extensions
-      - python3
-
 environment:
   contents:
     packages:
@@ -21,12 +9,24 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-typing-extensions
+      - python3
+  description: JSON Web Token implementation in Python
+  epoch: 0
+  name: py3-pyjwt
+  version: 2.9.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 868cf4ab2ca5a0a39da40e5a14dd740b203662b2
       repository: https://github.com/jpadilla/pyjwt/
       tag: ${{package.version}}
-      expected-commit: 868cf4ab2ca5a0a39da40e5a14dd740b203662b2
 
   - name: Python Build
     runs: python setup.py build
@@ -35,6 +35,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,14 +1,3 @@
-package:
-  name: py3-asn1crypto
-  version: 1.5.1
-  epoch: 0
-  description: Python ASN.1 library with a focus on performance and a pythonic API
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -19,11 +8,22 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: Python ASN.1 library with a focus on performance and a pythonic API
+  epoch: 0
+  name: py3-asn1crypto
+  version: 1.5.1
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/wbond/asn1crypto
       expected-commit: 835365ca6744c7afee793f050faf0a91ddb140b7
+      repository: https://github.com/wbond/asn1crypto
       tag: ${{package.version}}
 
   - name: Python Build
@@ -34,13 +34,6 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  github:
-    identifier: wbond/asn1crypto
-    strip-prefix: v
-    use-tag: true
-
 test:
   environment:
     contents:
@@ -50,3 +43,11 @@ test:
     - uses: python/import
       with:
         import: asn1crypto
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: wbond/asn1crypto
+    strip-prefix: v
+    use-tag: true

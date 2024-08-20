@@ -1,12 +1,3 @@
-# Generated from https://pypi.org/project/mock/
-package:
-  name: py3-mock
-  version: 5.1.0
-  epoch: 1
-  description: Rolling backport of unittest.mock for all Pythons
-  copyright:
-    - license: BSD-2-Clause
-
 environment:
   contents:
     packages:
@@ -14,6 +5,14 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-2-Clause
+  description: Rolling backport of unittest.mock for all Pythons
+  epoch: 1
+  name: py3-mock
+  version: 5.1.0
 
 pipeline:
   - uses: git-checkout
@@ -31,14 +30,15 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import mock
+        imports: 'import mock
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true
-  ignore-regex-patterns:
-    # This is an old release that had release- prefix, ignore it.
-    - release
   github:
     identifier: testing-cabal/mock
     use-tag: true
+  ignore-regex-patterns:
+    - release

@@ -1,14 +1,3 @@
-package:
-  name: py3-lru-dict
-  version: 1.3.0
-  epoch: 1
-  description: An Dict like LRU container.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -20,12 +9,23 @@ environment:
       - python3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python3
+  description: An Dict like LRU container.
+  epoch: 1
+  name: py3-lru-dict
+  version: 1.3.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 51c2761d94fd6fc85faea550240814938d1594f9
       repository: https://github.com/amitdev/lru-dict
       tag: v${{package.version}}
-      expected-commit: 51c2761d94fd6fc85faea550240814938d1594f9
 
   - name: Python Build
     runs: python setup.py build
@@ -34,6 +34,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

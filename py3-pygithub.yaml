@@ -1,24 +1,3 @@
-# Generated from https://pypi.org/project/PyGithub/
-package:
-  name: py3-pygithub
-  version: 2.3.0
-  epoch: 1
-  description: Use the full Github API v3
-  copyright:
-    - license: LGPL-3.0-or-later OR GPL-3.0-or-later
-  dependencies:
-    runtime:
-      - py3-cffi
-      - py3-pynacl
-      - py3-python-dateutil
-      - py3-requests
-      - py3-pyjwt
-      - py3-typing-extensions
-      - py3-urllib3
-      - py3-Deprecated
-    provides:
-      - py3-PyGithub=${{package.full-version}}
-
 environment:
   contents:
     packages:
@@ -26,6 +5,26 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: LGPL-3.0-or-later OR GPL-3.0-or-later
+  dependencies:
+    provides:
+      - py3-PyGithub=${{package.full-version}}
+    runtime:
+      - py3-Deprecated
+      - py3-cffi
+      - py3-pyjwt
+      - py3-pynacl
+      - py3-python-dateutil
+      - py3-requests
+      - py3-typing-extensions
+      - py3-urllib3
+  description: Use the full Github API v3
+  epoch: 1
+  name: py3-pygithub
+  version: 2.3.0
 
 pipeline:
   - uses: git-checkout
@@ -43,14 +42,15 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import github
+        imports: 'import github
+
+        '
+    - uses: py/pip-check
 
 update:
-  # There are some versions with post in it, ignore them
-  ignore-regex-patterns:
-    - post
   enabled: true
   github:
     identifier: pygithub/pygithub
     strip-prefix: v
+  ignore-regex-patterns:
+    - post

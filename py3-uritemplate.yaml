@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/uritemplate/
-package:
-  name: py3-uritemplate
-  version: 4.1.1
-  epoch: 1
-  description: Implementation of RFC 6570 URI Templates
-  copyright:
-    - license: BSD-3-Clause OR Apache-2.0
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause OR Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: Implementation of RFC 6570 URI Templates
+  epoch: 1
+  name: py3-uritemplate
+  version: 4.1.1
 
 pipeline:
   - uses: fetch
@@ -30,6 +29,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

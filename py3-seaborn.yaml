@@ -1,18 +1,3 @@
-# Generated from https://pypi.org/project/seaborn/
-package:
-  name: py3-seaborn
-  version: 0.13.2
-  epoch: 0
-  description: Statistical data visualization
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - numpy
-      - py3-pandas
-      - py3-matplotlib
-      - python3
-
 environment:
   contents:
     packages:
@@ -22,22 +7,45 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - numpy
+      - py3-matplotlib
+      - py3-pandas
+      - python3
+  description: Statistical data visualization
+  epoch: 0
+  name: py3-seaborn
+  version: 0.13.2
+
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/mwaskom/seaborn
       expected-commit: 9521ea1f29b5ce1df1aa2ed6f65f3bd1c63884bb
+      repository: https://github.com/mwaskom/seaborn
       tag: v${{package.version}}
 
   - name: Python build
-    runs: |
-      pip install . --prefix=/usr --root=${{targets.destdir}}
+    runs: 'pip install . --prefix=/usr --root=${{targets.destdir}}
+
+    '
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: mwaskom/seaborn
-    tag-filter: v
     strip-prefix: v
+    tag-filter: v

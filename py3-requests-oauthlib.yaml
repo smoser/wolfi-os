@@ -1,16 +1,3 @@
-package:
-  name: py3-requests-oauthlib
-  version: 2.0.0
-  epoch: 0
-  description: OAuthlib authentication support for Requests.
-  copyright:
-    - license: ISC
-  dependencies:
-    runtime:
-      - py3-oauthlib
-      - py3-requests
-      - python3
-
 environment:
   contents:
     packages:
@@ -23,12 +10,25 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: ISC
+  dependencies:
+    runtime:
+      - py3-oauthlib
+      - py3-requests
+      - python3
+  description: OAuthlib authentication support for Requests.
+  epoch: 0
+  name: py3-requests-oauthlib
+  version: 2.0.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 7af9125a4fb3a21fbff4b829449a090469cf32b4
       repository: https://github.com/requests/requests-oauthlib
       tag: v${{package.version}}
-      expected-commit: 7af9125a4fb3a21fbff4b829449a090469cf32b4
 
   - name: Python Build
     runs: python setup.py build
@@ -37,6 +37,14 @@ pipeline:
     runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

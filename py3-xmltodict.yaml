@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/xmltodict/
-package:
-  name: py3-xmltodict
-  version: 0.13.0
-  epoch: 1
-  description: Makes working with XML feel like you are working with JSON
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -20,21 +8,40 @@ environment:
       - python-3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Makes working with XML feel like you are working with JSON
+  epoch: 1
+  name: py3-xmltodict
+  version: 0.13.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 096db4ad337e4168ef891551814cdd829716192b
       repository: https://github.com/martinblech/xmltodict
       tag: v${{package.version}}
-      expected-commit: 096db4ad337e4168ef891551814cdd829716192b
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
-    use-tag: true
     identifier: martinblech/xmltodict
     strip-prefix: v
+    use-tag: true

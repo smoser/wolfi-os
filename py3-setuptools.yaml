@@ -1,22 +1,9 @@
-package:
-  name: py3-setuptools
-  version: 73.0.0
-  epoch: 0
-  description: Easily download, build, install, upgrade, and uninstall Python packages
-  copyright:
-    - license: "MIT"
-  dependencies:
-    provider-priority: 0
-
-vars:
-  pypi-package: setuptools
-
 data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -25,8 +12,17 @@ environment:
       - busybox
       - py3-supported-python
   environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
     SOURCE_DATE_EPOCH: 315532800
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    provider-priority: 0
+  description: Easily download, build, install, upgrade, and uninstall Python packages
+  epoch: 0
+  name: py3-setuptools
+  version: 73.0.0
 
 pipeline:
   - uses: git-checkout
@@ -36,32 +32,33 @@ pipeline:
       tag: v${{package.version}}
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
+  - dependencies:
       provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install-bootstrap
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
+    test:
+      environment:
+        contents:
+          packages:
+            - busybox
+      pipeline:
+        - uses: py/pip-check
 
-  - name: py3-supported-${{vars.pypi-package}}
-    description: meta package providing ${{vars.pypi-package}} for supported python versions.
-    dependencies:
+  - dependencies:
       runtime:
         - py3.10-${{vars.pypi-package}}
         - py3.11-${{vars.pypi-package}}
         - py3.12-${{vars.pypi-package}}
-
-update:
-  enabled: true
-  github:
-    identifier: pypa/setuptools
-    strip-prefix: v
+    description: meta package providing ${{vars.pypi-package}} for supported python versions.
+    name: py3-supported-${{vars.pypi-package}}
 
 test:
   environment:
@@ -71,6 +68,17 @@ test:
         - py3-pip
   pipeline:
     - name: Verify setuptools installation
-      runs: |
-        python -m pip install setuptools
+      runs: 'python -m pip install setuptools
+
         python -c "import setuptools"
+
+      '
+
+update:
+  enabled: true
+  github:
+    identifier: pypa/setuptools
+    strip-prefix: v
+
+vars:
+  pypi-package: setuptools

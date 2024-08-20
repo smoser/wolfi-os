@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/xattr/
-package:
-  name: py3-xattr
-  version: 1.1.0
-  epoch: 1
-  description: Python wrapper for extended filesystem attributes
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-cffi
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,24 +9,44 @@ environment:
       - python3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-cffi
+      - python-3
+  description: Python wrapper for extended filesystem attributes
+  epoch: 1
+  name: py3-xattr
+  version: 1.1.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 13ae4e93b7489b80e11dbe7989e67f9b5bd3f0cd
       repository: https://github.com/xattr/xattr
       tag: v${{package.version}}
-      expected-commit: 13ae4e93b7489b80e11dbe7989e67f9b5bd3f0cd
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  ignore-regex-patterns:
-    - test-*
   github:
     identifier: xattr/xattr
-    use-tag: true
     strip-prefix: v
     tag-filter: v
+    use-tag: true
+  ignore-regex-patterns:
+    - test-*

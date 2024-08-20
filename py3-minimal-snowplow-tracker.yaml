@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/minimal-snowplow-tracker/
-package:
-  name: py3-minimal-snowplow-tracker
-  version: 1.0.2
-  epoch: 0
-  description: A minimal snowplow event tracker for Python. Add analytics to your Python and Django apps, webapps and games
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -22,21 +10,40 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python3
+  description: A minimal snowplow event tracker for Python. Add analytics to your Python and Django apps, webapps and games
+  epoch: 0
+  name: py3-minimal-snowplow-tracker
+  version: 1.0.2
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: cb7e434be13af1f5dfe5b6b3416d062c477f8de1
       repository: https://github.com/snowplow/snowplow-python-tracker
       tag: ${{package.version}}
-      expected-commit: cb7e434be13af1f5dfe5b6b3416d062c477f8de1
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
-    use-tag: true
     identifier: snowplow/snowplow-python-tracker
     strip-suffix: .post1
+    use-tag: true

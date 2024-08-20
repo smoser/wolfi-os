@@ -1,9 +1,18 @@
-# Generated from https://pypi.org/project/jupyter-server/
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - nodejs
+      - npm
+      - py3-setuptools
+      - python-3
+      - wolfi-base
+  environment:
+    SOURCE_DATE_EPOCH: 315532800
+
 package:
-  name: py3-jupyter-server
-  version: 2.14.2
-  epoch: 0
-  description: The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications.
   copyright:
     - license: BSD-3-Clause
   dependencies:
@@ -28,21 +37,10 @@ package:
       - py3-traitlets
       - py3-websocket-client
       - python-3
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - nodejs
-      - npm
-      - py3-setuptools
-      - python-3
-      - wolfi-base
-  environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
-    SOURCE_DATE_EPOCH: 315532800
+  description: "The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications."
+  epoch: 0
+  name: py3-jupyter-server
+  version: 2.14.2
 
 pipeline:
   - uses: git-checkout
@@ -56,9 +54,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jupyter-server/jupyter_server
     strip-prefix: v
+  manual: false

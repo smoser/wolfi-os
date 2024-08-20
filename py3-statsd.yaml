@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/statsd/
-package:
-  name: py3-statsd
-  version: 4.0.1
-  epoch: 0
-  description: A simple statsd client.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: A simple statsd client.
+  epoch: 0
+  name: py3-statsd
+  version: 4.0.1
 
 pipeline:
   - uses: git-checkout
@@ -32,9 +31,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jsocol/pystatsd
     strip-prefix: v
+  manual: false

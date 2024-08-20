@@ -1,22 +1,9 @@
-package:
-  name: py3-pythran
-  version: 0.16.1
-  epoch: 0
-  description: Ahead of Time compiler for numeric kernels
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    provider-priority: 0
-
-vars:
-  pypi-package: pythran
-
 data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -28,41 +15,55 @@ environment:
       - py3-supported-python
       - py3-supported-wheel
 
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    provider-priority: 0
+  description: Ahead of Time compiler for numeric kernels
+  epoch: 0
+  name: py3-pythran
+  version: 0.16.1
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: ab9f31aca68b42a69bd87e09a635f3630b051280
       repository: https://github.com/serge-sans-paille/pythran
       tag: ${{package.version}}
-      expected-commit: ab9f31aca68b42a69bd87e09a635f3630b051280
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
+  - dependencies:
+      provider-priority: ${{range.value}}
+      provides:
+        - py3-${{vars.pypi-package}}
       runtime:
         - py${{range.key}}-beniget
         - py${{range.key}}-gast
         - py${{range.key}}-ply
-      provides:
-        - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             import: ${{vars.pypi-package}}
+            python: python${{range.key}}
+        - uses: py/pip-check
 
 update:
-  ignore-regex-patterns:
-    - .post1
   enabled: true
   github:
     identifier: serge-sans-paille/pythran
     use-tag: true
+  ignore-regex-patterns:
+    - .post1
+
+vars:
+  pypi-package: pythran

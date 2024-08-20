@@ -1,9 +1,16 @@
-# Generated from https://pypi.org/project/openai/
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - py3-setuptools
+      - python3
+      - wolfi-base
+  environment:
+    SOURCE_DATE_EPOCH: 315532800
+
 package:
-  name: py3-openai
-  version: 1.39.0
-  epoch: 0
-  description: Python client library for the OpenAI API
   copyright:
     - license: MIT
   dependencies:
@@ -17,26 +24,17 @@ package:
       - py3-tqdm
       - py3-typing-extensions
       - python3
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-setuptools
-      - python3
-      - wolfi-base
-  environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
-    SOURCE_DATE_EPOCH: 315532800
+  description: Python client library for the OpenAI API
+  epoch: 0
+  name: py3-openai
+  version: 1.39.0
 
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: a5f5c8ed9a0f2658214525011507e3091c186bdf
       repository: https://github.com/openai/openai-python.git
       tag: v${{package.version}}
-      expected-commit: a5f5c8ed9a0f2658214525011507e3091c186bdf
 
   - name: Python Build
     uses: python/build-wheel
@@ -48,10 +46,11 @@ test:
     - uses: python/import
       with:
         import: openai
+    - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: openai/openai-python
-    tag-filter: v
     strip-prefix: v
+    tag-filter: v

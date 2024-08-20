@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/msgpack/
-package:
-  name: py3-msgpack
-  version: 1.0.8
-  epoch: 1
-  description: MessagePack serializer
-  copyright:
-    - license: Apache-2.0
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -22,22 +10,41 @@ environment:
       - python3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0
+  dependencies:
+    runtime:
+      - python-3
+  description: MessagePack serializer
+  epoch: 1
+  name: py3-msgpack
+  version: 1.0.8
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 9aedf8ed7f632044d42984e9710fefbd97023f71
       repository: https://github.com/msgpack/msgpack-python
       tag: v${{package.version}}
-      expected-commit: 9aedf8ed7f632044d42984e9710fefbd97023f71
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
   github:
     identifier: msgpack/msgpack-python
-    use-tag: true
     strip-prefix: v
     tag-filter: v
+    use-tag: true

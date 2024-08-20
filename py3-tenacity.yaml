@@ -1,23 +1,23 @@
-package:
-  name: py3-tenacity
-  version: 9.0.0
-  epoch: 0
-  description: "General-purpose retrying library, written in Python, to simplify the task of adding retry behavior to just about anything"
-  copyright:
-    - license: Apache-2.0
-
 environment:
   contents:
     packages:
       - python3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: Apache-2.0
+  description: General-purpose retrying library, written in Python, to simplify the task of adding retry behavior to just about anything
+  epoch: 0
+  name: py3-tenacity
+  version: 9.0.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: a662bbb487cd6d34541824589f8e8c7a1f7791bb
       repository: https://github.com/jd/tenacity.git
       tag: ${{package.version}}
-      expected-commit: a662bbb487cd6d34541824589f8e8c7a1f7791bb
 
   - uses: python/build-wheel
 
@@ -27,8 +27,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import tenacity
+        imports: 'import tenacity
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true
@@ -36,4 +38,4 @@ update:
     identifier: jd/tenacity
     use-tag: true
   ignore-regex-patterns:
-    - 'mergify2-'
+    - mergify2-

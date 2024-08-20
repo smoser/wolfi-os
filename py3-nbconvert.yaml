@@ -1,9 +1,16 @@
-# Generated from https://pypi.org/project/nbconvert/
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - py3-setuptools
+      - python-3
+      - wolfi-base
+  environment:
+    SOURCE_DATE_EPOCH: 315532800
+
 package:
-  name: py3-nbconvert
-  version: 7.16.4
-  epoch: 0
-  description: Converting Jupyter Notebooks
   copyright:
     - license: BSD-3-Clause
   dependencies:
@@ -25,19 +32,10 @@ package:
       - py3-tinycss2
       - py3-traitlets
       - python-3
-
-environment:
-  contents:
-    packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-setuptools
-      - python-3
-      - wolfi-base
-  environment:
-    # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
-    SOURCE_DATE_EPOCH: 315532800
+  description: Converting Jupyter Notebooks
+  epoch: 0
+  name: py3-nbconvert
+  version: 7.16.4
 
 pipeline:
   - uses: fetch
@@ -49,6 +47,14 @@ pipeline:
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

@@ -1,16 +1,3 @@
-# Generated from https://pypi.org/project/leather/
-package:
-  name: py3-leather
-  version: 0.4.0
-  epoch: 1
-  description: Python charting for 80% of humans.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - py3-six
-      - python3
-
 environment:
   contents:
     packages:
@@ -23,17 +10,37 @@ environment:
       - python3
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - py3-six
+      - python3
+  description: Python charting for 80% of humans.
+  epoch: 1
+  name: py3-leather
+  version: 0.4.0
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 71a0ac379b3ce1a4490a0a7378d4b584ddd0530c
       repository: https://github.com/wireservice/leather
       tag: ${{package.version}}
-      expected-commit: 71a0ac379b3ce1a4490a0a7378d4b584ddd0530c
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

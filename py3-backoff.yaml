@@ -1,12 +1,3 @@
-# Generated from https://pypi.org/project/backoff/
-package:
-  name: py3-backoff
-  version: 2.2.1
-  epoch: 1
-  description: Function decoration for backoff and retry
-  copyright:
-    - license: MIT
-
 environment:
   contents:
     packages:
@@ -14,6 +5,14 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  description: Function decoration for backoff and retry
+  epoch: 1
+  name: py3-backoff
+  version: 2.2.1
 
 pipeline:
   - uses: fetch
@@ -30,8 +29,10 @@ test:
   pipeline:
     - uses: python/import
       with:
-        imports: |
-          import backoff
+        imports: 'import backoff
+
+        '
+    - uses: py/pip-check
 
 update:
   enabled: true

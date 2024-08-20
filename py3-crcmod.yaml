@@ -1,14 +1,3 @@
-package:
-  name: py3-crcmod
-  version: '1.7'
-  epoch: 3
-  description: Cyclic Redundancy Check (CRC) implementation in Python
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -21,39 +10,43 @@ environment:
       - python-3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Cyclic Redundancy Check (CRC) implementation in Python
+  epoch: 3
+  name: py3-crcmod
+  version: '1.7'
+
 pipeline:
   - uses: fetch
     with:
-      uri: https://files.pythonhosted.org/packages/source/c/crcmod/crcmod-${{package.version}}.tar.gz
       expected-sha256: dc7051a0db5f2bd48665a990d3ec1cc305a466a77358ca4492826f41f283601e
+      uri: https://files.pythonhosted.org/packages/source/c/crcmod/crcmod-${{package.version}}.tar.gz
 
   - name: Python Build
-    runs: |
-      python3 -m gpep517 build-wheel \
+    runs: 'python3 -m gpep517 build-wheel \
+
       --wheel-dir .dist \
+
       --output-fd 3 3>&1 >&2
+
+    '
 
   - name: Python install
     runs: python3 -m installer --destdir="${{targets.destdir}}" .dist/*.whl
 
   - uses: strip
 
+test:
+  pipeline:
+    - runs: "LIBRARY=\"crcmod\"\nIMPORT_STATEMENT=\"import crcmod\"\n\nif ! python -c \"$IMPORT_STATEMENT\"; then\n    echo \"Failed to import library '$LIBRARY'.\"\n    python -c \"$IMPORT_STATEMENT\" 2>&1\n    exit 1\nelse\n    echo \"Library '$LIBRARY' is installed and can be imported successfully.\"\n    exit 0\nfi\n"
+    - uses: py/pip-check
+
 update:
   enabled: true
   release-monitor:
     identifier: 12017
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="crcmod"
-        IMPORT_STATEMENT="import crcmod"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi

@@ -1,14 +1,3 @@
-package:
-  name: py3-python-crfsuite
-  version: 0.9.10
-  epoch: 0
-  description: Python binding for CRFsuite
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -24,20 +13,41 @@ environment:
       - python-3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Python binding for CRFsuite
+  epoch: 0
+  name: py3-python-crfsuite
+  version: 0.9.10
+
 pipeline:
   - uses: fetch
     with:
       expected-sha256: f38524631e2b533341f10f2c77689270dc6ecd5985495dccf7aa37b1045bc2e5
       uri: https://files.pythonhosted.org/packages/source/p/python-crfsuite/python-crfsuite-${{package.version}}.tar.gz
 
-  - runs: |
-      srcdir=$(pwd)
+  - runs: 'srcdir=$(pwd)
+
       cython pycrfsuite/_pycrfsuite.pyx --cplus -a -2 -I pycrfsuite
+
+    '
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
+
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
 
 update:
   enabled: true

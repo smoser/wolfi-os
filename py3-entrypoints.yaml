@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/entrypoints/
-package:
-  name: py3-entrypoints
-  version: "0.4"
-  epoch: 2
-  description: Discover and load entry points from installed packages.
-  copyright:
-    - license: MIT
-  dependencies:
-    runtime:
-      - python-3
-
 environment:
   contents:
     packages:
@@ -19,6 +7,17 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    runtime:
+      - python-3
+  description: Discover and load entry points from installed packages.
+  epoch: 2
+  name: py3-entrypoints
+  version: '0.4'
 
 pipeline:
   - uses: git-checkout
@@ -32,14 +31,15 @@ pipeline:
 
   - uses: strip
 
-update:
-  enabled: true
-  manual: false
-  github:
-    identifier: takluyver/entrypoints
-
 test:
   pipeline:
     - uses: python/import
       with:
         import: entrypoints
+    - uses: py/pip-check
+
+update:
+  enabled: true
+  github:
+    identifier: takluyver/entrypoints
+  manual: false

@@ -1,17 +1,3 @@
-# Generated from https://pypi.org/project/jupyterhub-firstuseauthenticator/
-package:
-  name: py3-jupyterhub-firstuseauthenticator
-  version: 1.0.0
-  epoch: 0
-  description: JupyterHub Authenticator that lets users set passwords on first use
-  copyright:
-    - license: BSD-3-Clause
-  dependencies:
-    runtime:
-      - py3-bcrypt
-      - py3-jupyterhub
-      - python-3
-
 environment:
   contents:
     packages:
@@ -21,6 +7,19 @@ environment:
       - py3-setuptools
       - python-3
       - wolfi-base
+
+package:
+  copyright:
+    - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-bcrypt
+      - py3-jupyterhub
+      - python-3
+  description: JupyterHub Authenticator that lets users set passwords on first use
+  epoch: 0
+  name: py3-jupyterhub-firstuseauthenticator
+  version: 1.0.0
 
 pipeline:
   - uses: git-checkout
@@ -34,9 +33,17 @@ pipeline:
 
   - uses: strip
 
+test:
+  environment:
+    contents:
+      packages:
+        - busybox
+  pipeline:
+    - uses: py/pip-check
+
 update:
   enabled: true
-  manual: false
   github:
     identifier: jupyterhub/firstuseauthenticator
     use-tag: true
+  manual: false

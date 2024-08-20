@@ -1,13 +1,9 @@
-# Generated from https://pypi.org/project/exceptiongroup/
-package:
-  name: py3-exceptiongroup
-  version: 1.2.2
-  epoch: 1
-  description: Backport of PEP 654 (exception groups)
-  copyright:
-    - license: MIT
-  dependencies:
-    provider-priority: 0
+data:
+  - items:
+      3.11: '311'
+      3.12: '312'
+      '3.10': '310'
+    name: py-versions
 
 environment:
   contents:
@@ -19,46 +15,50 @@ environment:
       - py3-supported-python
       - py3-supported-wheel
 
-vars:
-  pypi-package: exceptiongroup
-
-data:
-  - name: py-versions
-    items:
-      3.10: "310"
-      3.11: "311"
-      3.12: "312"
+package:
+  copyright:
+    - license: MIT
+  dependencies:
+    provider-priority: 0
+  description: Backport of PEP 654 (exception groups)
+  epoch: 1
+  name: py3-exceptiongroup
+  version: 1.2.2
 
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: 2399d5474325017229c93e210df735bc1209ef6b
       repository: https://github.com/agronholm/exceptiongroup
       tag: ${{package.version}}
-      expected-commit: 2399d5474325017229c93e210df735bc1209ef6b
 
 subpackages:
-  - range: py-versions
-    name: py${{range.key}}-${{vars.pypi-package}}
-    description: ${{vars.pypi-package}} installed for python${{range.key}}
-    dependencies:
+  - dependencies:
+      provider-priority: ${{range.value}}
       provides:
         - py3-${{vars.pypi-package}}
-      provider-priority: ${{range.value}}
+    description: ${{vars.pypi-package}} installed for python${{range.key}}
+    name: py${{range.key}}-${{vars.pypi-package}}
     pipeline:
       - uses: py/pip-build-install
         with:
           python: python${{range.key}}
       - uses: strip
+    range: py-versions
     test:
       pipeline:
         - uses: python/import
           with:
-            python: python${{range.key}}
             from: ${{vars.pypi-package}}
             import: BaseExceptionGroup
+            python: python${{range.key}}
+        - uses: py/pip-check
 
 update:
   enabled: true
   github:
     identifier: agronholm/exceptiongroup
     use-tag: true
+
+vars:
+  pypi-package: exceptiongroup

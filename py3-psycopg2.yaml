@@ -1,15 +1,3 @@
-# Generated from https://pypi.org/project/psycopg2/
-package:
-  name: py3-psycopg2
-  version: 2.9.9
-  epoch: 1
-  description: psycopg2 - Python-PostgreSQL Database Adapter
-  copyright:
-    - license: LGPL-3.0-or-later
-  dependencies:
-    runtime:
-      - python3
-
 environment:
   contents:
     packages:
@@ -24,24 +12,28 @@ environment:
       - python3-dev
       - wolfi-base
 
+package:
+  copyright:
+    - license: LGPL-3.0-or-later
+  dependencies:
+    runtime:
+      - python3
+  description: psycopg2 - Python-PostgreSQL Database Adapter
+  epoch: 1
+  name: py3-psycopg2
+  version: 2.9.9
+
 pipeline:
   - uses: git-checkout
     with:
+      expected-commit: ad5bee7054519d87f25bc5828c502b2ebe197049
       repository: https://github.com/psycopg/psycopg2
       tag: ${{package.version}}
-      expected-commit: ad5bee7054519d87f25bc5828c502b2ebe197049
 
   - name: Python Build
     uses: python/build-wheel
 
   - uses: strip
-
-update:
-  enabled: true
-  version-separator: _
-  github:
-    identifier: psycopg/psycopg2
-    use-tag: true
 
 test:
   environment:
@@ -57,49 +49,25 @@ test:
       PGDATA: /tmp/test_db
       PGUSER: wolfi
   pipeline:
-    - name: "Test database creation"
-      runs: |
-        useradd $PGUSER
+    - name: Test database creation
+      runs: 'useradd $PGUSER
+
         sudo -u $PGUSER initdb -D /tmp/test_db
+
         sudo -u $PGUSER pg_ctl -D /tmp/test_db -l /tmp/logfile start
+
         sudo -u $PGUSER createdb testdb
+
         psql -lqt | cut -d \| -f 1 | grep -qw testdb
-    - name: "Test psycopg2"
-    - runs: |
-        cat <<'EOF' >> /tmp/test.py
-        import psycopg2
 
-        def main():
-            conn = psycopg2.connect(dbname="testdb", user="wolfi")
-            cursor = conn.cursor()
+      '
+    - name: Test psycopg2
+    - runs: "cat <<'EOF' >> /tmp/test.py\nimport psycopg2\n\ndef main():\n    conn = psycopg2.connect(dbname=\"testdb\", user=\"wolfi\")\n    cursor = conn.cursor()\n\n    try:\n        # Create Table\n        cursor.execute(\"\"\"\n            CREATE TABLE IF NOT EXISTS example_table (\n                id SERIAL PRIMARY KEY,\n                message TEXT\n            )\n        \"\"\")\n\n        # Insert value\n        cursor.execute(\"INSERT INTO example_table (message) VALUES (%s)\", (\"Hello Wolfy!\",))\n        conn.commit()\n\n        # Select and print\n        cursor.execute(\"SELECT message FROM example_table\")\n        result = cursor.fetchone()\n        message = result[0]\n        print(\"Message retrieved from database:\", message)\n\n    except Exception as e:\n        print(\"Error:\", e)\n\n    finally:\n        cursor.close()\n        conn.close()\n\nif __name__ == \"__main__\":\n    main()\nEOF\npython3 /tmp/test.py\n"
+    - uses: py/pip-check
 
-            try:
-                # Create Table
-                cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS example_table (
-                        id SERIAL PRIMARY KEY,
-                        message TEXT
-                    )
-                """)
-
-                # Insert value
-                cursor.execute("INSERT INTO example_table (message) VALUES (%s)", ("Hello Wolfy!",))
-                conn.commit()
-
-                # Select and print
-                cursor.execute("SELECT message FROM example_table")
-                result = cursor.fetchone()
-                message = result[0]
-                print("Message retrieved from database:", message)
-
-            except Exception as e:
-                print("Error:", e)
-
-            finally:
-                cursor.close()
-                conn.close()
-
-        if __name__ == "__main__":
-            main()
-        EOF
-        python3 /tmp/test.py
+update:
+  enabled: true
+  github:
+    identifier: psycopg/psycopg2
+    use-tag: true
+  version-separator: _
