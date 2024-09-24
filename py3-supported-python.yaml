@@ -10,6 +10,7 @@ package:
       - python-3.10-base
       - python-3.11-base
       - python-3.12-base
+      - python-3.13-base
 
 environment:
   contents:
@@ -25,6 +26,7 @@ subpackages:
         - python-3.10-base-dev
         - python-3.11-base-dev
         - python-3.12-base-dev
+        - python-3.13-base-dev
 
 update:
   enabled: false
