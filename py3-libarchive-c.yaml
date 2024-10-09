@@ -24,9 +24,9 @@ pipeline:
       uri: https://files.pythonhosted.org/packages/source/l/libarchive-c/libarchive-c-${{package.version}}.tar.gz
       expected-sha256: 7bcce24ea6c0fa3bc62468476c6d2f6264156db2f04878a372027c10615a2721
 
-  # Use the correct library soname
-  # NOTE: find_library is broken on aarch64, so just hardcode it for now.
   - runs: |
+      # Use the correct library soname
+      # NOTE: find_library is broken on aarch64, so just hardcode it for now.
       soname=$(scanelf --quiet --soname /usr/lib/libarchive.so | awk '{print $1}')
       sed -i -e "s:find_library('archive'):'/usr/lib/$soname':" libarchive/ffi.py
 
