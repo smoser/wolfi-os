@@ -1,24 +1,29 @@
-# Generated from https://pypi.org/project/xmltodict/
 package:
   name: py3-xmltodict
   version: 0.14.0
-  epoch: 0
+  epoch: 1
   description: Makes working with XML feel like you are working with JSON
   copyright:
     - license: MIT
   dependencies:
-    runtime:
-      - python-3
+    provider-priority: 0
+
+vars:
+  pypi-package: xmltodict
+  import: xmltodict
+
+data:
+  - name: py-versions
+    items:
+      3.10: '310'
+      3.11: '311'
+      3.12: '312'
+      3.13: '300'
 
 environment:
   contents:
     packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-setuptools
-      - python-3
-      - wolfi-base
+      - py3-supported-build-base
 
 pipeline:
   - uses: git-checkout
@@ -27,20 +32,42 @@ pipeline:
       tag: v${{package.version}}
       expected-commit: 48b47c95cfd82b77c9073d1026879da0208808cc
 
-  - name: Python Build
-    uses: python/build-wheel
+subpackages:
+  - range: py-versions
+    name: py${{range.key}}-${{vars.pypi-package}}
+    description: python${{range.key}} version of ${{vars.pypi-package}}
+    dependencies:
+      provider-priority: ${{range.value}}
+      provides:
+        - py3-${{vars.pypi-package}}
+    pipeline:
+      - uses: py/pip-build-install
+        with:
+          python: python${{range.key}}
+      - uses: strip
+    test:
+      pipeline:
+        - uses: python/import
+          with:
+            python: python${{range.key}}
+            imports: |
+              import ${{vars.import}}
 
-  - uses: strip
-
-update:
-  enabled: true
-  github:
-    use-tag: true
-    identifier: martinblech/xmltodict
-    strip-prefix: v
+  - name: py3-supported-${{vars.pypi-package}}
+    description: meta package providing ${{vars.pypi-package}} for supported python versions.
+    dependencies:
+      runtime:
+        - py3.10-${{vars.pypi-package}}
+        - py3.11-${{vars.pypi-package}}
+        - py3.12-${{vars.pypi-package}}
+        - py3.13-${{vars.pypi-package}}
 
 test:
   pipeline:
+    - uses: python/import
+      with:
+        imports: |
+          import ${{vars.import}}
     - runs: |
         # Verify xmltodict is installed
         python3 -c "import xmltodict"
@@ -64,3 +91,10 @@ test:
         assert "<item>value1</item>" in xml and "<item>value2</item>" in xml, "Dict to XML conversion failed"
         print("Dict to XML conversion passed")
         EOF
+
+update:
+  enabled: true
+  github:
+    use-tag: true
+    identifier: martinblech/xmltodict
+    strip-prefix: v

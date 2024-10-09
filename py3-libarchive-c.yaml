@@ -1,22 +1,32 @@
 package:
   name: py3-libarchive-c
-  version: "5.1"
-  epoch: 0
-  description: "Python interface to libarchive."
+  version: '5.1'
+  epoch: 1
+  description: Python interface to libarchive.
   copyright:
     - license: CC0-1.0
+  dependencies:
+    provider-priority: 0
+
+vars:
+  pypi-package: libarchive-c
+  import: libarchive
+
+data:
+  - name: py-versions
+    items:
+      3.10: '310'
+      3.11: '311'
+      3.12: '312'
+      3.13: '300'
 
 environment:
   contents:
     packages:
-      - build-base
-      - busybox
       - libarchive
       - libarchive-dev
-      - py3-setuptools
-      - python3
+      - py3-supported-build-base
       - scanelf
-      - wolfi-baselayout
 
 pipeline:
   - uses: fetch
@@ -24,15 +34,42 @@ pipeline:
       uri: https://files.pythonhosted.org/packages/source/l/libarchive-c/libarchive-c-${{package.version}}.tar.gz
       expected-sha256: 7bcce24ea6c0fa3bc62468476c6d2f6264156db2f04878a372027c10615a2721
 
-  - runs: |
-      # Use the correct library soname
-      # NOTE: find_library is broken on aarch64, so just hardcode it for now.
-      soname=$(scanelf --quiet --soname /usr/lib/libarchive.so | awk '{print $1}')
-      sed -i -e "s:find_library('archive'):'/usr/lib/$soname':" libarchive/ffi.py
+subpackages:
+  - range: py-versions
+    name: py${{range.key}}-${{vars.pypi-package}}
+    description: python${{range.key}} version of ${{vars.pypi-package}}
+    dependencies:
+      provider-priority: ${{range.value}}
+      provides:
+        - py3-${{vars.pypi-package}}
+    pipeline:
+      - uses: py/pip-build-install
+        with:
+          python: python${{range.key}}
+      - uses: strip
+    test:
+      pipeline:
+        - uses: python/import
+          with:
+            python: python${{range.key}}
+            imports: |
+              import ${{vars.import}}
 
-  - runs: |
-      python3 setup.py build
-      python3 setup.py install --skip-build --root="${{targets.destdir}}"
+  - name: py3-supported-${{vars.pypi-package}}
+    description: meta package providing ${{vars.pypi-package}} for supported python versions.
+    dependencies:
+      runtime:
+        - py3.10-${{vars.pypi-package}}
+        - py3.11-${{vars.pypi-package}}
+        - py3.12-${{vars.pypi-package}}
+        - py3.13-${{vars.pypi-package}}
+
+test:
+  pipeline:
+    - uses: python/import
+      with:
+        imports: |
+          import ${{vars.import}}
 
 update:
   enabled: true

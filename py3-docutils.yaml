@@ -1,25 +1,31 @@
 package:
   name: py3-docutils
   version: 0.21.2
-  epoch: 1
+  epoch: 2
   description: Documentation Utilities for Python3
   copyright:
     - license: BSD-2-Clause AND GPL-3.0-or-later AND Python-2.0
   dependencies:
-    runtime:
-      - py3-pip
-      - python3
+    provider-priority: 0
+
+vars:
+  pypi-package: docutils
+  import: docutils
+
+data:
+  - name: py-versions
+    items:
+      3.10: '310'
+      3.11: '311'
+      3.12: '312'
+      3.13: '300'
 
 environment:
   contents:
     packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-flit-core
-      - py3-pip
-      - python3
-      - wolfi-base
+      - py3-supported-build-base
+      - py3-supported-flit-core
+      - py3-supported-pip
 
 pipeline:
   - uses: fetch
@@ -27,18 +33,44 @@ pipeline:
       uri: https://files.pythonhosted.org/packages/source/d/docutils/docutils-${{package.version}}.tar.gz
       expected-sha256: 3a6b18732edf182daa3cd12775bbb338cf5691468f91eeeb109deff6ebfa986f
 
-  - name: Python Build
-    uses: python/build-wheel
+subpackages:
+  - range: py-versions
+    name: py${{range.key}}-${{vars.pypi-package}}
+    description: python${{range.key}} version of ${{vars.pypi-package}}
+    dependencies:
+      provider-priority: ${{range.value}}
+      provides:
+        - py3-${{vars.pypi-package}}
+      runtime:
+        - py${{range.key}}-pip
+    pipeline:
+      - uses: py/pip-build-install
+        with:
+          python: python${{range.key}}
+      - uses: strip
+    test:
+      pipeline:
+        - uses: python/import
+          with:
+            python: python${{range.key}}
+            imports: |
+              import ${{vars.import}}
 
-  - uses: strip
-
-update:
-  enabled: true
-  release-monitor:
-    identifier: 3849
+  - name: py3-supported-${{vars.pypi-package}}
+    description: meta package providing ${{vars.pypi-package}} for supported python versions.
+    dependencies:
+      runtime:
+        - py3.10-${{vars.pypi-package}}
+        - py3.11-${{vars.pypi-package}}
+        - py3.12-${{vars.pypi-package}}
+        - py3.13-${{vars.pypi-package}}
 
 test:
   pipeline:
+    - uses: python/import
+      with:
+        imports: |
+          import ${{vars.import}}
     - runs: |
         docutils --version
         docutils --help
@@ -62,3 +94,8 @@ test:
         rst2xetex --help
         rst2xml --version
         rst2xml --help
+
+update:
+  enabled: true
+  release-monitor:
+    identifier: 3849
