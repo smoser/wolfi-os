@@ -12,7 +12,6 @@ package:
       - py3-requests
       - py3-urllib3
       - py3-websocket-client
-      - py3-hatchling
 
 environment:
   contents:
@@ -21,6 +20,7 @@ environment:
       - busybox
       - ca-certificates-bundle
       - wolfi-base
+      - py3-hatchling
   environment:
     # This is needed to work around the error "ValueError: ZIP does not support timestamps before 1980"
     SOURCE_DATE_EPOCH: 315532800
