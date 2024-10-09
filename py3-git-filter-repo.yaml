@@ -26,8 +26,6 @@ pipeline:
       repository: https://github.com/newren/git-filter-repo
       tag: v${{package.version}}
 
-  # pyproject.toml isn't included in the 2.83 branch
-  # It comes from https://github.com/newren/git-filter-repo/blob/main/pyproject.toml
   - name: Python Build
     uses: python/build-wheel
 
