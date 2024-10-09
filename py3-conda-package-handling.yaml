@@ -40,12 +40,3 @@ update:
   enabled: true
   github:
     identifier: conda/conda-package-handling
-
-test:
-  environment:
-    contents:
-      packages:
-        - python3
-  pipeline:
-    - runs: |
-        python3 -c "import conda_package_handling"

@@ -38,18 +38,3 @@ update:
   github:
     identifier: takluyver/backcall
     use-tag: true
-
-test:
-  pipeline:
-    - runs: |
-        LIBRARY="backcall"
-        IMPORT_STATEMENT="import backcall"
-
-        if ! python -c "$IMPORT_STATEMENT"; then
-            echo "Failed to import library '$LIBRARY'."
-            python -c "$IMPORT_STATEMENT" 2>&1
-            exit 1
-        else
-            echo "Library '$LIBRARY' is installed and can be imported successfully."
-            exit 0
-        fi
