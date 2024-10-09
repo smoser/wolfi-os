@@ -12,6 +12,7 @@ package:
       - py3-requests
       - py3-urllib3
       - py3-websocket-client
+      - py3-hatchling
 
 environment:
   contents:

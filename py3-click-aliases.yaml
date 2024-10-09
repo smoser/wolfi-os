@@ -18,6 +18,7 @@ environment:
       - ca-certificates-bundle
       - py3-click
       - py3-setuptools
+      - py3-poetry
       - python3
       - wolfi-base
 
