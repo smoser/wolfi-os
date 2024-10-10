@@ -1,17 +1,15 @@
 package:
   name: py3-alembic
   version: 1.11.3
-  epoch: 4
+  epoch: 5
   description: A database migration tool for SQLAlchemy.
   copyright:
     - license: MIT
   dependencies:
     runtime:
-      - py3-dateutil
       - py3-mako
-      - py3-python-editor
       - py3-sqlalchemy
-      - python3
+      - py3-typing-extensions
 
 # transform melange version 1.11.3 => 1_11_3
 var-transforms:
@@ -24,11 +22,7 @@ environment:
   contents:
     packages:
       - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-setuptools
-      - python3
-      - wolfi-base
+      - py3-build-base
 
 pipeline:
   - uses: git-checkout
@@ -37,11 +31,7 @@ pipeline:
       expected-commit: 47850ab7dbc88905db8abf7abab6a48699d4a50a
       tag: rel_${{vars.mangled-package-version}}
 
-  - name: Python Build
-    runs: python setup.py build
-
-  - name: Python Install
-    runs: python setup.py install --prefix=/usr --root="${{targets.destdir}}"
+  - uses: py/pip-build-install
 
   - uses: strip
 

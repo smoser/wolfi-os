@@ -20,7 +20,7 @@ environment:
       - py3-certifi
       - py3-contourpy
       - py3-cycler
-      - py3-dateutil
+      - py3-python-dateutil
       - py3-fonttools
       - py3-kiwisolver
       - py3-packaging

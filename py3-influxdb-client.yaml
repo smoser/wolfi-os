@@ -5,19 +5,17 @@ package:
   description: "InfluxDB 2.0 python client"
   copyright:
     - license: MIT
+  dependencies:
+    runtime:
+      - py3-dateutil
+      - py3-certifi
+      - py3-urllib3
+      - py3-setuptools
 
 environment:
   contents:
     packages:
-      - build-base
-      - busybox
-      - ca-certificates-bundle
-      - py3-certifi
-      - py3-dateutil
-      - py3-pip
-      - py3-setuptools
-      - py3-urllib3
-      - wolfi-base
+      - py3-build-base
 
 pipeline:
   - uses: git-checkout
