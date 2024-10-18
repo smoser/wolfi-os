@@ -1,0 +1,116 @@
+package:
+  name: tigervnc
+  version: 1.14.0
+  epoch: 0
+  description: High performance, multi-platform VNC client and server
+  copyright:
+    - license: GPL-2.0-or-later
+
+environment:
+  environment:
+    # CFLAGS=-O2 -Wall -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -march=x86-64-v2 -mtune=broadwell
+    #CFLAGS: "-O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -march=x86-64-v2 -mtune=broadwell"
+    # CPPFLAGS=-O2 -Wp,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS
+    #CPPFLAGS: "-O2" 
+    # LDFLAGS=-Wl,--as-needed,-O1,--sort-common -Wl,-z,relro,-z,now,-z,noexecstack
+    #LDFLAGS: "-Wl,-z,relro,-z,now,-z,noexecstack"
+  contents:
+    packages:
+      - wolfi-base
+      - build-base
+      - cmake
+      - zlib-dev
+      - pixman-dev
+      - libfltk-dev
+      - libjpeg-turbo-dev
+#      - gnutls-dev
+      - openssl-dev
+      - libx11-dev
+      - libxdamage-dev
+      - libxfixes-dev
+      - gmp-dev
+#      - nettle-dev
+      - libxrandr-dev
+      - libxtst-dev
+      - linux-pam-dev
+      - libxrender-dev
+      - libpng-dev
+
+      - font-util-dev
+      - patch
+      - libtool
+      - autoconf
+      - automake
+      - util-macros 
+      - font-util-dev
+      - patch
+      - libtool
+      - mesa-dev
+      - libxcvt-dev
+      - libxfont-dev
+      - libxkb-dev
+      - mesa-gl
+      - mesa-libgallium
+      
+#      - openssl-dev
+      - pkgconf
+      - pkgconf-dev
+#      - zlib
+#      - zlib-dev
+
+pipeline:
+  - runs: |
+      env
+      exit
+  - uses: git-checkout
+    with:
+      repository: https://github.com/TigerVNC/tigervnc
+      tag: v${{package.version}}
+      expected-commit: 4a09a96661624dff14662d6e9849e06a6c70ae03
+
+  - working-directory: xorg-source 
+    uses: fetch
+    with:
+      expected-sha256: 2864b6a5359ab41c5a6132c69b5d0c9af6eb85ad26d433edb012c914029de752
+      uri: https://www.x.org/archive/individual/xserver/xorg-server-21.1.13.tar.gz
+
+  - uses: cmake/configure
+    with:
+      opts: -DCMAKE_EXE_LINKER_FLAGS=-lpng
+
+  - uses: cmake/build
+    with:
+
+  - uses: cmake/install
+
+  - runs: |
+      cp -R xorg-source/* unix/xserver/
+
+  - runs: |
+      ( cd unix/xserver && patch -p1 ) < unix/xserver21.patch
+
+  - runs: |
+      cd unix/xserver
+      autoreconf -fiv
+      ./configure --with-pic --without-dtrace \
+          --disable-static --disable-dri \
+          --disable-xinerama --disable-xvfb --disable-xnest --disable-xorg \
+          --disable-dmx --disable-xwin --disable-xephyr --disable-kdrive \
+          --disable-config-hal --disable-config-udev --disable-dri2 --enable-glx \
+          --with-default-font-path="catalogue:/etc/X11/fontpath.d,built-ins" \
+          --with-xkb-path=/usr/share/X11/xkb \
+          --with-xkb-output=/var/lib/xkb \
+          --with-xkb-bin-directory=/usr/bin \
+          --with-serverconfig-path=/usr/lib64/xorg
+
+  - runs: |
+      d=$PWD
+      cd unix/xserver
+      make -j$(nproc) TIGERVNC_SRCDIR=$d TIGERVNC_BUILDDIR=$d/output
+
+  - uses: strip
+
+update:
+  enabled: true
+  github:
+    identifier: TigerVNC/tigervnc

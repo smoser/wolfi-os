@@ -1,0 +1,65 @@
+
+package:
+  name: libfltk
+  version: 1.3.9
+  epoch: 0
+  description: "FLTK - Fast Light Tool Kit - https://github.com/fltk/fltk - cross platform GUI development"
+  copyright:
+    - license: BSD-3-Clause AND IJG AND Zlib
+
+environment:
+  contents:
+    packages:
+      - build-base
+      - cmake
+      - openssf-compiler-options
+      - wolfi-base
+      - libx11-dev
+      - libpng-dev
+
+pipeline:
+  - uses: git-checkout
+    with:
+      repository: https://github.com/fltk/fltk.git
+      tag: release-${{package.version}}
+      expected-commit: a66273e72621887fcbd0ee5dca2dd133356d5d8a
+
+  - uses: cmake/configure
+
+  - uses: cmake/build
+
+  - uses: cmake/install
+
+  - uses: strip
+
+subpackages:
+  - name: ${{package.name}}-dev
+    pipeline:
+      - uses: split/dev
+
+      - runs: |
+          # this is bogus, but when linked against it needs libpng
+          mkdir -p ${{targets.contextdir}}/usr/lib/pkgconfig
+          cat > ${{targets.contextdir}}/usr/lib/pkgconfig/libfltk.pc <<"EOF"
+          prefix=/usr
+          exec_prefix=${prefix}
+          libdir=/usr/lib
+          includedir=${prefix}/include
+
+          Name: libfltk
+          Description: Fast Light Toolkit
+          Version: ${{package.version}}
+          Libs: -L${libdir} -lfltk -lpng16
+          Cflags: -I${includedir}
+          EOF
+
+test:
+  pipeline:
+    - uses: test/pkgconf
+
+update:
+  enabled: true
+  github:
+    use-tag: true
+    identifier: a66273e72621887fcbd0ee5dca2dd133356d5d8a
+    strip-prefix: release-
