@@ -21,7 +21,7 @@ environment:
       - cmake
       - zlib-dev
       - pixman-dev
-      - libfltk-dev
+      - fltk-dev
       - libjpeg-turbo-dev
 #      - gnutls-dev
       - openssl-dev

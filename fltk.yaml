@@ -1,6 +1,6 @@
 
 package:
-  name: libfltk
+  name: fltk
   version: 1.3.9
   epoch: 0
   description: "FLTK - Fast Light Tool Kit - https://github.com/fltk/fltk - cross platform GUI development"
@@ -25,6 +25,12 @@ pipeline:
       expected-commit: a66273e72621887fcbd0ee5dca2dd133356d5d8a
 
   - uses: cmake/configure
+    with:
+      opts: |
+        -DOPTION_BUILD_SHARED_LIBS:BOOL=ON \
+        -DOPTION_CREATE_LINKS:BOOL=ON \
+        -DCMAKE_CXX_FLAGS=-fPIC \
+        -DCMAKE_C_FLAGS=-fPIC
 
   - uses: cmake/build
 
