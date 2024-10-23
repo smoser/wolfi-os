@@ -6,6 +6,9 @@ package:
   description: OpenTracing support for Flask applications
   copyright:
     - license: BSD-3-Clause
+  dependencies:
+    runtime:
+      - py3-opentracing
 
 environment:
   contents:
