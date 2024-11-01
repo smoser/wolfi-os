@@ -18,7 +18,6 @@ data:
       3.10: '310'
       3.11: '311'
       3.12: '312'
-      3.13: '300'
 
 environment:
   contents:
@@ -44,6 +43,7 @@ subpackages:
         - py${{range.key}}-google-api-core
         - py${{range.key}}-google-cloud-core
         - py${{range.key}}-grpc-google-iam-v1
+        - py${{range.key}}-grpc-interceptor
         - py${{range.key}}-proto-plus
         - py${{range.key}}-protobuf
         - py${{range.key}}-sqlparse
@@ -67,7 +67,6 @@ subpackages:
         - py3.10-${{vars.pypi-package}}
         - py3.11-${{vars.pypi-package}}
         - py3.12-${{vars.pypi-package}}
-        - py3.13-${{vars.pypi-package}}
 
 test:
   pipeline:
