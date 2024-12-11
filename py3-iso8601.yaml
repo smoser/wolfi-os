@@ -1,0 +1,69 @@
+# Generated from https://pypi.org/project/iso8601/
+package:
+  name: py3-iso8601
+  version: 2.1.0
+  epoch: 0
+  description: Simple module to parse ISO 8601 dates
+  copyright:
+    - license: MIT
+  dependencies:
+    provider-priority: "0"
+
+vars:
+  pypi-package: iso8601
+  import: iso8601
+
+data:
+  - name: py-versions
+    items:
+      "3.10": "310"
+      "3.11": "311"
+      "3.12": "312"
+      "3.13": "300"
+
+environment:
+  contents:
+    packages:
+      - build-base
+      - py3-supported-build-base
+      - py3-supported-poetry
+
+pipeline:
+  - uses: git-checkout
+    with:
+      expected-commit: c147acc8952bf279a38d5cab1f80be71735a10cf
+      repository: https://github.com/micktwomey/pyiso8601
+      tag: ${{package.version}}
+
+subpackages:
+  - range: py-versions
+    name: py${{range.key}}-${{vars.pypi-package}}
+    pipeline:
+      - name: Python Build
+        uses: py/pip-build-install
+        with:
+          python: python${{range.key}}
+    dependencies:
+      provides:
+        - py3-${{vars.pypi-package}}
+      provider-priority: ${{range.value}}
+    test:
+      pipeline:
+        - name: Import Test
+          uses: python/import
+          with:
+            import: ${{vars.import}}
+            python: python${{range.key}}
+
+update:
+  enabled: true
+  manual: false
+  github:
+    identifier: micktwomey/pyiso8601
+
+test:
+  pipeline:
+    - name: Import Test
+      uses: python/import
+      with:
+        import: ${{vars.import}}
