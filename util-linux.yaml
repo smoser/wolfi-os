@@ -48,6 +48,7 @@ pipeline:
   - uses: autoconf/configure
     with:
       opts: |
+        --sbindir=/usr/bin \
         --disable-silent-rules \
         --enable-newgrp \
         --bindir=/usr/bin \
