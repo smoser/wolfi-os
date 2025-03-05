@@ -1,7 +1,7 @@
 package:
   name: util-linux
   version: "2.40.4"
-  epoch: 30
+  epoch: 40
   description: Random collection of Linux utilities
   copyright:
     - license: |-
@@ -10,6 +10,7 @@ package:
     runtime:
       - merged-bin
       - merged-sbin
+      - merged-usrsbin
       - wolfi-baselayout
 
 environment:
@@ -107,6 +108,7 @@ subpackages:
       runtime:
         - merged-bin
         - merged-sbin
+        - merged-usrsbin
         - util-linux
         - wolfi-baselayout
     description: util-linux dev
@@ -125,6 +127,7 @@ subpackages:
       runtime:
         - merged-bin
         - merged-sbin
+        - merged-usrsbin
         - wolfi-baselayout
 
   - range: libs
@@ -143,6 +146,7 @@ subpackages:
       runtime:
         - merged-bin
         - merged-sbin
+        - merged-usrsbin
         - wolfi-baselayout
 
   - range: bins
@@ -160,6 +164,7 @@ subpackages:
       runtime:
         - merged-bin
         - merged-sbin
+        - merged-usrsbin
         - wolfi-baselayout
 
   - name: util-linux-login
@@ -168,6 +173,7 @@ subpackages:
       runtime:
         - merged-bin
         - merged-sbin
+        - merged-usrsbin
         - runuser
         - wolfi-baselayout
     pipeline:
@@ -408,6 +414,7 @@ subpackages:
       runtime:
         - merged-bin
         - merged-sbin
+        - merged-usrsbin
         - setarch
         - wolfi-baselayout
 
