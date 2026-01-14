@@ -56,3 +56,4 @@ To request inclusion of a package into Wolfi please use our [New Package Request
 foo
 foo
 foo
+foo
